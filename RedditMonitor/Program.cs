@@ -1,69 +1,44 @@
 ﻿using System;
-using System.Text;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.ObjectPool;
 using RabbitMQ.Client;
-using Reddit;
-using Reddit.Controllers;
-using Reddit.Controllers.EventArgs;
+using RedditMonitor.Logic;
 
 namespace RedditMonitor
 {
     class Program
     {
-        private enum subreddits
-        {
-            wallstreetbets,
-            investing,
-            securityanalysis,
-            robinhood,
-            robinhoodpennystocks,
-            stocks,
-            economics,
-            options,
-            pennystocksdd,
-            pennystocks,
-            finance,
-            forex,
-            stock_picks,
-            stockmarket,
-            investmentclub,
-            algotrading,
-        }
+        private static IServiceProvider _serviceProvider;
 
         static void Main(string[] args)
         {
-            var reddit = new RedditClient("mGqzdWydsbEojw", "31745057-ZFtdV83BXkOqklWcsaKyMwNbY2cV1Q");
-            var wallStreetBets = reddit.Subreddit("wallstreetbets");
-            wallStreetBets.Posts.GetNew();
-            wallStreetBets.Comments.GetNew();  // This call prevents any existing "new"-sorted comments from triggering the update event.  --Kris
-			wallStreetBets.Comments.MonitorNew();
-			wallStreetBets.Comments.NewUpdated += C_AddNewPostToQueue;
+            RegisterServices();
+            var redditMonitoring = _serviceProvider.GetService<IRedditMonitoring>();
+            redditMonitoring.MonitorPosts();
+            DisposeServices();
         }
 
-        private static void C_AddNewPostToQueue(object sender, CommentsUpdateEventArgs eventArgs)
+        private static void RegisterServices()
         {
-            Console.WriteLine("New Message");
-            // var factory = new ConnectionFactory() { HostName = "localhost" };
-            // foreach (Comment comment in eventArgs.Added)
-            // {
-            //     using(var connection = factory.CreateConnection())
-            //     using(var channel = connection.CreateModel())
-            //     {
-            //         channel.QueueDeclare(queue: "hello",
-            //                             durable: false,
-            //                             exclusive: false,
-            //                             autoDelete: false,
-            //                             arguments: null);
+            var collection = new ServiceCollection();
+            collection.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+            collection.AddSingleton<IPooledObjectPolicy<IModel>, RabbitMqConnection>();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<RedditMonitoring>().As<IRedditMonitoring>();
+            builder.Populate(collection);
+            var appContainer = builder.Build();
 
-            //         string message = "Hello World!";
-            //         var body = Encoding.UTF8.GetBytes(message);
+            _serviceProvider = new AutofacServiceProvider(appContainer);
+        }
 
-            //         channel.BasicPublish(exchange: "",
-            //                             routingKey: "hello",
-            //                             basicProperties: null,
-            //                             body: body);
-            //         Console.WriteLine(" [x] Sent {0}", message);
-                // }
-            // }
+        private static void DisposeServices()
+        {
+            if(_serviceProvider == null)
+                return;
+            if (_serviceProvider is IDisposable)
+                ((IDisposable)_serviceProvider).Dispose();
         }
     }
 }
