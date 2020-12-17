@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using RabbitMQ.Client;
 using RedditMonitor.Logic;
+using RedditMonitor.Logic.RabbitMQ;
 
 namespace RedditMonitor
 {
@@ -22,15 +23,18 @@ namespace RedditMonitor
 
         private static void RegisterServices()
         {
-            var collection = new ServiceCollection();
-            collection.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
-            collection.AddSingleton<IPooledObjectPolicy<IModel>, RabbitMqConnection>();
-            var builder = new ContainerBuilder();
-            builder.RegisterType<RedditMonitoring>().As<IRedditMonitoring>();
-            builder.Populate(collection);
-            var appContainer = builder.Build();
+            var services = new ServiceCollection();
+            services.AddSingleton<IRedditMonitoring, RedditMonitoring>();
+            services.AddSingleton<IRabbitManager, RabbitManager>();
+            _serviceProvider = services.BuildServiceProvider(true);
+            // var builder = new ContainerBuilder();
+            // builder.RegisterType<ObjectPoolProvider>().As<DefaultObjectPoolProvider>().SingleInstance();
+            // builder.RegisterType<IPooledObjectPolicy<IModel>>().As<RabbitMqConnection>().SingleInstance();
+            // builder.RegisterType<RedditMonitoring>().As<IRedditMonitoring>();
+            // builder.Populate(collection);
+            // var appContainer = builder.Build();
 
-            _serviceProvider = new AutofacServiceProvider(appContainer);
+            // _serviceProvider = new AutofacServiceProvider(appContainer);
         }
 
         private static void DisposeServices()

@@ -10,6 +10,7 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="5.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="RabbitMQ.client" Version="6.2.1" />
     <PackageReference Include="Reddit" Version="1.4.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />

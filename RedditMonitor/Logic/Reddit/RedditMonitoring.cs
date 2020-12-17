@@ -2,6 +2,7 @@ using System.Configuration;
 using RabbitMQ.Client;
 using Reddit;
 using Reddit.Controllers.EventArgs;
+using RedditMonitor.Logic.RabbitMQ;
 
 namespace RedditMonitor.Logic
 {
@@ -27,6 +28,13 @@ namespace RedditMonitor.Logic
             algotrading,
         }
 
+        private readonly IRabbitManager _rabbitManager;
+
+        public RedditMonitoring(IRabbitManager rabbitManager)
+        {
+            _rabbitManager = rabbitManager;
+        }
+
         public void MonitorPosts()
         {
             var reddit = new RedditClient(
@@ -40,33 +48,12 @@ namespace RedditMonitor.Logic
 			wallStreetBets.Comments.NewUpdated += C_AddNewPostToQueue;
         }
 
-        private static void C_AddNewPostToQueue(object sender, CommentsUpdateEventArgs eventArgs)
+        private static void C_AddNewPostToQueue(
+            object sender,
+            CommentsUpdateEventArgs eventArgs)
         {
             var dept = ConfigurationManager.AppSettings["rabbitmqHost"];
-            var factory = new ConnectionFactory()
-            {
-                HostName = ConfigurationManager.AppSettings["rabbitmqHost"]
-            };
-            // foreach (Comment comment in eventArgs.Added)
-            // {
-            //     using(var connection = factory.CreateConnection())
-            //     using(var channel = connection.CreateModel())
-            //     {
-            //         channel.QueueDeclare(queue: "reddit-comments",
-            //                             durable: false,
-            //                             exclusive: false,
-            //                             autoDelete: false,
-            //                             arguments: null);
 
-            //         var body = Encoding.UTF8.GetBytes(message);
-
-            //         channel.BasicPublish(exchange: "",
-            //                             routingKey: "reddit-comments",
-            //                             basicProperties: null,
-            //                             body: body);
-            //         Console.WriteLine(" [x] Sent {0}", message);
-                // }
-            // }
         }
     }
 }
