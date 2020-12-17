@@ -1,34 +1,19 @@
+using System;
 using System.Configuration;
-using RabbitMQ.Client;
+using Common.RabbitMQ;
 using Reddit;
+using Reddit.Controllers;
 using Reddit.Controllers.EventArgs;
-using RedditMonitor.Logic.RabbitMQ;
+using RedditMonitor.Models;
 
 namespace RedditMonitor.Logic
 {
     public class RedditMonitoring : IRedditMonitoring
     {
-         private enum subreddits
-        {
-            wallstreetbets,
-            investing,
-            securityanalysis,
-            robinhood,
-            robinhoodpennystocks,
-            stocks,
-            economics,
-            options,
-            pennystocksdd,
-            pennystocks,
-            finance,
-            forex,
-            stock_picks,
-            stockmarket,
-            investmentclub,
-            algotrading,
-        }
-
         private readonly IRabbitManager _rabbitManager;
+        private readonly String redditAppId = ConfigurationManager.AppSettings["reddit_app_id"];
+        private readonly String redditOauthKey = ConfigurationManager.AppSettings["reddit_oauth_key"];
+        private readonly String routingKey = "reddit-comments";
 
         public RedditMonitoring(IRabbitManager rabbitManager)
         {
@@ -37,9 +22,7 @@ namespace RedditMonitor.Logic
 
         public void MonitorPosts()
         {
-            var reddit = new RedditClient(
-                ConfigurationManager.AppSettings["reddit_app_id"],
-                ConfigurationManager.AppSettings["reddit_oauth_key"]);
+            var reddit = new RedditClient(redditAppId, redditOauthKey);
 
             var wallStreetBets = reddit.Subreddit("wallstreetbets");
             wallStreetBets.Posts.GetNew();
@@ -48,12 +31,31 @@ namespace RedditMonitor.Logic
 			wallStreetBets.Comments.NewUpdated += C_AddNewPostToQueue;
         }
 
-        private static void C_AddNewPostToQueue(
+        private void C_AddNewPostToQueue(
             object sender,
             CommentsUpdateEventArgs eventArgs)
         {
-            var dept = ConfigurationManager.AppSettings["rabbitmqHost"];
+            foreach (var comment in eventArgs.Added)
+            {
+                var payload = buildRedditQueueMessage(sender, comment);
+                _rabbitManager.Publish<RedditQueueMessage>(payload, routingKey);
 
+            }
+            var dept = ConfigurationManager.AppSettings["rabbitmqHost"];
+        }
+
+        private RedditQueueMessage buildRedditQueueMessage(object sender, Comment comment)
+        {
+            if (!Enum.TryParse(comment.Subreddit, out SubReddit subReddit))
+                Console.WriteLine($"Unable to parse subreddit: {comment.Subreddit}");
+            return new RedditQueueMessage
+                {
+                    Source = RedditMessageType.Comment,
+                    SubReddit = subReddit,
+                    RedditId = comment.Id,
+                    TimePosted = comment.Created,
+                    Message = comment.Body,
+                };
         }
     }
 }
