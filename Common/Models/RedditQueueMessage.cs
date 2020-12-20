@@ -1,6 +1,6 @@
 using System;
 
-namespace RedditMonitor.Models
+namespace Common.Models
 {
     public class RedditQueueMessage
     {

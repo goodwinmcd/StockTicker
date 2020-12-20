@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace Common.RabbitMQ
 {
@@ -27,6 +28,7 @@ namespace Common.RabbitMQ
             {
                 HostName = _rabbitHost,
                 RequestedHeartbeat = new TimeSpan(30),
+                DispatchConsumersAsync =true,
             };
             _connection = factory.CreateConnection();
             _connection.ConnectionShutdown += C_ConnectionShutdown;
@@ -92,5 +94,8 @@ namespace Common.RabbitMQ
                 }
             }
         }
+
+        public AsyncEventingBasicConsumer GetAsyncConsumer()
+            => new AsyncEventingBasicConsumer(_channel);
     }
 }

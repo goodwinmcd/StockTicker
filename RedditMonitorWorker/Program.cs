@@ -1,9 +1,8 @@
 ﻿using System;
 using Common.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
-using RedditMonitor.Logic;
 
-namespace RedditMonitor
+namespace RedditMonitorWorker
 {
     class Program
     {
@@ -12,15 +11,14 @@ namespace RedditMonitor
         static void Main(string[] args)
         {
             RegisterServices();
-            var redditMonitoring = _serviceProvider.GetService<IRedditMonitoring>();
-            redditMonitoring.MonitorPosts();
+            // var redditMonitoring = _serviceProvider.GetService<IRedditMonitoring>();
+            // redditMonitoring.MonitorPosts();
             DisposeServices();
         }
 
         private static void RegisterServices()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<IRedditMonitoring, RedditMonitoring>();
             services.AddSingleton<IRabbitManager, RabbitManager>();
             _serviceProvider = services.BuildServiceProvider(true);
         }

@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Npgsql;
+using RedditApi.DataAccess;
+using RedditApi.Logic;
 
 namespace RedditApi
 {
@@ -28,6 +34,10 @@ namespace RedditApi
         {
 
             services.AddControllers();
+            var dbConnectionString = ConfigurationManager.ConnectionStrings["pgsql"];
+            services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(dbConnectionString.ToString()));
+            services.AddScoped<IStockTickerRepo, StockTickerRepo>();
+            services.AddScoped<IStockTickerService, StockTickerService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RedditApi", Version = "v1" });

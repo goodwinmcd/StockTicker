@@ -1,4 +1,4 @@
-namespace RedditMonitor.Models
+namespace Common.Models
 {
     public enum SubReddit
     {
