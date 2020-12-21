@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Configuration;
+using System.Threading.Tasks;
+using System.Linq;
 using Common.Models;
+using Npgsql;
 using RedditApi.DataAccess;
 
 namespace RedditApi.Logic
@@ -9,43 +12,43 @@ namespace RedditApi.Logic
     public class StockTickerService : IStockTickerService
     {
         private readonly IStockTickerRepo _stockTickerRepo;
-        private readonly IDbConnection _connection;
+        private readonly NpgsqlConnection _connection;
 
 
-        public StockTickerService(
-            IStockTickerRepo stockTickerRepo,
-            IDbConnection connection)
+        public StockTickerService(IStockTickerRepo stockTickerRepo)
         {
             _stockTickerRepo = stockTickerRepo;
-            _connection = connection;
+            _connection = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["pgsql"].ToString());
         }
 
-        public void CreateTicker(StockTicker ticker)
+        public async Task<IEnumerable<StockTicker>> BulkTickerInsertAsync(IEnumerable<StockTicker> tickers)
         {
-            _connection.Open();
             try
             {
-                using(var trans = _connection.BeginTransaction())
-                {
-                    _stockTickerRepo.CreateTickerDBAsync(ticker, _connection);
-                    trans.Commit();
-                }
-            }
-            catch (Exception ex)
-            {
-
+                IEnumerable<StockTicker> successfulInserts = new List<StockTicker>();
+                await _connection.OpenAsync();
+                foreach(var ticker in tickers)
+                    if(await _stockTickerRepo.CreateTickerDBAsync(ticker, _connection))
+                        successfulInserts.Append(ticker);
+                return successfulInserts;
             }
             finally
             {
-                _connection.Close();
+                await _connection.CloseAsync();
             }
         }
 
-        public void BulkTickerInsert(IEnumerable<StockTicker> tickers)
+        public async Task<IEnumerable<StockTicker>> GetAllTickersAsync()
         {
-            foreach(var ticker in tickers)
+            try
             {
-                CreateTicker(ticker);
+                await _connection.OpenAsync();
+                var result = await _stockTickerRepo.GetAllTickersAsync(_connection);
+                return result;
+            }
+            finally
+            {
+                await _connection.CloseAsync();
             }
         }
     }

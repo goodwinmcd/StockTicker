@@ -60,19 +60,6 @@ namespace LoadStockTickers
                 JsonConvert.SerializeObject(allTickers),
                 Encoding.UTF8,
                 "application/json");
-            // using (var client = new HttpClient())
-            // {
-            //     ServicePointManager.ServerCertificateValidationCallback =
-            //         delegate (
-            //             object s,
-            //             X509Certificate certificate,
-            //             X509Chain chain,
-            //             SslPolicyErrors sslPolicyErrors
-            //         ) {
-            //             return true;
-            //         };
-            //     var derp = client.PostAsync("http://localhost:5000/stockticker/batch", content).Result;
-            // }
             using (var httpClientHandler = new HttpClientHandler())
             {
                 httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => {
@@ -85,7 +72,11 @@ namespace LoadStockTickers
                 };
                 using (var httpClient = new HttpClient(httpClientHandler))
                 {
+                    var watch = System.Diagnostics.Stopwatch.StartNew();
+                    httpClient.Timeout = TimeSpan.FromMinutes(30);
                     var httpResponse = httpClient.PostAsync("http://localhost:5000/stockticker/batch", content).Result;
+                    watch.Stop();
+                    var elaspedTime = watch.ElapsedMilliseconds;
                 }
             }
         }
@@ -106,7 +97,7 @@ namespace LoadStockTickers
                     var record = csvReader.GetRecord<CsvTickerNasdaqModel>();
                     returnList.Add(new StockTicker
                     {
-                        nasdaqSymbol = record.Symbol,
+                        NasdaqSymbol = record.Symbol,
                         Exchange = "nasdaq",
                         SecurityName = record.Name
                     });

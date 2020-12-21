@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Common.Models;
 
 namespace RedditApi.Logic
 {
     public interface IStockTickerService
     {
-         void CreateTicker(StockTicker ticker);
-         void BulkTickerInsert(IEnumerable<StockTicker> tickers);
+        Task<IEnumerable<StockTicker>> GetAllTickersAsync();
+         Task<IEnumerable<StockTicker>> BulkTickerInsertAsync(IEnumerable<StockTicker> tickers);
     }
 }

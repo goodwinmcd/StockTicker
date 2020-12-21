@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Common.Models;
 using Dapper;
 using Npgsql;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace RedditApi.DataAccess
 {
@@ -15,22 +17,44 @@ namespace RedditApi.DataAccess
         //     _connection = connection;
         // }
 
-        public void CreateTickerDBAsync(StockTicker ticker, IDbConnection conn)
+        public async Task<bool> CreateTickerDBAsync(StockTicker ticker, IDbConnection conn)
         {
             var sql = @"INSERT INTO stockTickers
                 VALUES (
-                @nasdaqSymbol,
+                @NasdaqSymbol,
                 @Exchange,
                 @SecurityName)";
             try
             {
-                conn.Execute(sql, ticker);
-                // Task.Factory.StartNew(() => conn.Execute(sql));
+                if (await TickerExists(ticker, conn))
+                {
+                    return false;
+                }
+                else
+                {
+                    await conn.ExecuteAsync(sql, ticker);
+                    return true;
+                }
             }
             catch (PostgresException ex)
             {
+                return false;
             }
 
+        }
+
+        public async Task<IEnumerable<StockTicker>> GetAllTickersAsync(IDbConnection conn)
+        {
+            var sql = "SELECT * FROM StockTickers";
+            var result = await conn.QueryAsync<StockTicker>(sql);
+            return result;
+        }
+
+        public async Task<bool> TickerExists(StockTicker ticker, IDbConnection conn)
+        {
+            var sql = "SELECT * FROM StockTickers WHERE nasdaqSymbol=@nasdaqSymbol";
+            var result = await conn.QueryAsync<StockTicker>(sql, new { nasdaqSymbol = ticker.NasdaqSymbol });
+            return result.Count() != 0;
         }
 
     }

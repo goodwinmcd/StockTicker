@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -21,18 +23,18 @@ namespace RedditApi.Controllers
             _stockTickerService = stockTickerService;
         }
 
-        [HttpPost]
-        public IActionResult Post(StockTicker ticker)
+        [HttpGet]
+        public async Task<IActionResult> GetAllTickers()
         {
-            _stockTickerService.CreateTicker(ticker);
-            return StatusCode(201, "Created");
+            var result = await _stockTickerService.GetAllTickersAsync();
+            return Ok(result);
         }
 
         [HttpPost("Batch")]
-        public IActionResult PostBatch(IEnumerable<StockTicker> stockTickers)
+        public async Task<IActionResult> PostBatch(IEnumerable<StockTicker> stockTickers)
         {
-            _stockTickerService.BulkTickerInsert(stockTickers);
-            return Ok();
+            var results = await _stockTickerService.BulkTickerInsertAsync(stockTickers);
+            return StatusCode(201, results);
         }
     }
 }
