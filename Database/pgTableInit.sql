@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS StockTickers (
-    ticker TEXT PRIMARY KEY,
-    CompanyName TEXT,
-    Sector TEXT,
-    Industry Text
+    nasdaqSymbol TEXT PRIMARY KEY,
+    Exchange TEXT,
+    SecurityName Text
 );

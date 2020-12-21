@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -34,8 +31,6 @@ namespace RedditApi.Controllers
         [HttpPost("Batch")]
         public IActionResult PostBatch(IEnumerable<StockTicker> stockTickers)
         {
-            if (stockTickers.Count() > 250)
-                return StatusCode(413);
             _stockTickerService.BulkTickerInsert(stockTickers);
             return Ok();
         }

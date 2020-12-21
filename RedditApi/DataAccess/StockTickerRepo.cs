@@ -19,10 +19,9 @@ namespace RedditApi.DataAccess
         {
             var sql = @"INSERT INTO stockTickers
                 VALUES (
-                @Ticker,
-                @CompanyName,
-                @Sector,
-                @Industry)";
+                @nasdaqSymbol,
+                @Exchange,
+                @SecurityName)";
             try
             {
                 conn.Execute(sql, ticker);
