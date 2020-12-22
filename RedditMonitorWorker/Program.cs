@@ -1,34 +1,30 @@
-﻿using System;
-using Common.RabbitMQ;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Topshelf;
 
 namespace RedditMonitorWorker
 {
     class Program
     {
-        private static IServiceProvider _serviceProvider;
-
         static void Main(string[] args)
         {
-            RegisterServices();
-            // var redditMonitoring = _serviceProvider.GetService<IRedditMonitoring>();
-            // redditMonitoring.MonitorPosts();
-            DisposeServices();
+            ConfigureAndRunWinService();
         }
 
-        private static void RegisterServices()
+        private static void ConfigureAndRunWinService()
         {
-            var services = new ServiceCollection();
-            services.AddSingleton<IRabbitManager, RabbitManager>();
-            _serviceProvider = services.BuildServiceProvider(true);
-        }
-
-        private static void DisposeServices()
-        {
-            if(_serviceProvider == null)
-                return;
-            if (_serviceProvider is IDisposable)
-                ((IDisposable)_serviceProvider).Dispose();
+            var rc = HostFactory.Run(configurator =>
+            {
+                configurator.EnableServiceRecovery(recoveryConfig => recoveryConfig
+                    .RestartService(1)
+                    .RestartService(1)
+                    .RestartService(1));
+                configurator.Service<ExecutorService>(serviceConfig =>
+                {
+                    serviceConfig.ConstructUsing(context => new ExecutorService());
+                    serviceConfig.WhenStarted((service, control) => service.Start(control));
+                    serviceConfig.WhenStopped((service, control) => service.Stop(control));
+                });
+                configurator.RunAsLocalSystem();
+            });
         }
     }
 }

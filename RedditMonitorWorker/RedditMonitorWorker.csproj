@@ -5,9 +5,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="autofac" Version="6.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="RabbitMQ.client" Version="6.2.1" />
+    <PackageReference Include="topshelf" Version="4.3.0" />
   </ItemGroup>
 
   <PropertyGroup>

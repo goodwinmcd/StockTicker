@@ -5,6 +5,8 @@ namespace Common.RabbitMQ
     public interface IRabbitManager
     {
         void Publish<T>(T message, string routeKey) where T : class;
-        AsyncEventingBasicConsumer GetAsyncConsumer();
+        EventingBasicConsumer GetAsyncConsumer();
+        void RegisterConsumer(EventingBasicConsumer consumer);
+        void BasicAck(ulong deliveryTag, bool multimessage);
     }
 }

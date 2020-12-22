@@ -28,7 +28,7 @@ namespace Common.RabbitMQ
             {
                 HostName = _rabbitHost,
                 RequestedHeartbeat = new TimeSpan(30),
-                DispatchConsumersAsync =true,
+                DispatchConsumersAsync =false,
             };
             _connection = factory.CreateConnection();
             _connection.ConnectionShutdown += C_ConnectionShutdown;
@@ -95,7 +95,17 @@ namespace Common.RabbitMQ
             }
         }
 
-        public AsyncEventingBasicConsumer GetAsyncConsumer()
-            => new AsyncEventingBasicConsumer(_channel);
+        public EventingBasicConsumer GetAsyncConsumer()
+            => new EventingBasicConsumer(_channel);
+
+        public void RegisterConsumer(EventingBasicConsumer consumer)
+        {
+            _channel.BasicConsume(queue: _queueName, consumer: consumer);
+        }
+
+        public void BasicAck(ulong deliveryTag, bool multimessage)
+        {
+            _channel.BasicAck(deliveryTag, multimessage);
+        }
     }
 }

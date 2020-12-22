@@ -6,23 +6,26 @@ using RabbitMQ.Client.Events;
 using System.Linq;
 using System;
 using System.Collections.Generic;
-
 namespace RedditMonitorWorker.Logic
 {
     public class RedditConsumer : IRedditConsumer
     {
         public readonly IRabbitManager _rabbitManager;
-        private IEnumerable<String> _stockTickers = new List<String>();
+        private IEnumerable<string> _stockTickers;
 
-        public RedditConsumer(IRabbitManager rabbitManager)
+        public RedditConsumer(
+            IRabbitManager rabbitManager,
+            IStockTickerManager StockTickerManager)
         {
             _rabbitManager = rabbitManager;
+            _stockTickers = StockTickerManager.AllStockTickers;
         }
 
         public void Consume()
         {
             var consumer = _rabbitManager.GetAsyncConsumer();
-
+            consumer.Received += C_ConsumeMessage;
+            _rabbitManager.RegisterConsumer(consumer);
         }
 
         private void C_ConsumeMessage(object ch, BasicDeliverEventArgs ea)
@@ -35,6 +38,7 @@ namespace RedditMonitorWorker.Logic
             {
                 // call api to store value
             }
+            _rabbitManager.BasicAck(ea.DeliveryTag, false);
         }
 
         private string StripPunctuation(string s)
@@ -42,7 +46,7 @@ namespace RedditMonitorWorker.Logic
             var sb = new StringBuilder();
             foreach (char c in s)
             {
-                if (!char.IsPunctuation(c) || c != '$')
+                if (char.IsLetter(c) || char.IsWhiteSpace(c))
                     sb.Append(Char.ToLower(c));
             }
             return sb.ToString();
