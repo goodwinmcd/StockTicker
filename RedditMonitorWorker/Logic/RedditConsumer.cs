@@ -31,7 +31,7 @@ namespace RedditMonitorWorker.Logic
         private void C_ConsumeMessage(object ch, BasicDeliverEventArgs ea)
         {
             var content = Encoding.UTF8.GetString(ea.Body.ToArray());
-            var body = JsonConvert.DeserializeObject<RedditQueueMessage>(content);
+            var body = JsonConvert.DeserializeObject<RedditMessage>(content);
             var messageWords = StripPunctuation(body.Message).Split(' ');
             var foundStockTickers = _stockTickers.Intersect(messageWords);
             if (foundStockTickers.Any())

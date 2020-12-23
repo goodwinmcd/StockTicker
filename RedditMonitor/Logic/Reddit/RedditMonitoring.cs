@@ -38,17 +38,17 @@ namespace RedditMonitor.Logic
             foreach (var comment in eventArgs.Added)
             {
                 var payload = buildRedditQueueMessage(sender, comment);
-                _rabbitManager.Publish<RedditQueueMessage>(payload, routingKey);
+                _rabbitManager.Publish<RedditMessage>(payload, routingKey);
 
             }
             var dept = ConfigurationManager.AppSettings["rabbitmqHost"];
         }
 
-        private RedditQueueMessage buildRedditQueueMessage(object sender, Comment comment)
+        private RedditMessage buildRedditQueueMessage(object sender, Comment comment)
         {
             if (!Enum.TryParse(comment.Subreddit, out SubReddit subReddit))
                 Console.WriteLine($"Unable to parse subreddit: {comment.Subreddit}");
-            return new RedditQueueMessage
+            return new RedditMessage
                 {
                     Source = RedditMessageType.Comment,
                     SubReddit = subReddit,

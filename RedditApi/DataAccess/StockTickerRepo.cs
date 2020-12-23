@@ -10,13 +10,6 @@ namespace RedditApi.DataAccess
 {
     public class StockTickerRepo : IStockTickerRepo
     {
-        // private readonly IDbConnection _connection;
-
-        // public StockTickerRepo(IDbConnection connection)
-        // {
-        //     _connection = connection;
-        // }
-
         public async Task<bool> CreateTickerDBAsync(StockTicker ticker, IDbConnection conn)
         {
             var sql = @"INSERT INTO stockTickers

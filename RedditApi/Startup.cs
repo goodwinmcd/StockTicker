@@ -35,7 +35,7 @@ namespace RedditApi
 
             services.AddControllers();
             var dbConnectionString = ConfigurationManager.ConnectionStrings["pgsql"];
-            //.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(dbConnectionString.ToString()));
+            // services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(dbConnectionString.ToString()));
             services.AddScoped<IStockTickerRepo, StockTickerRepo>();
             services.AddScoped<IStockTickerService, StockTickerService>();
             services.AddSwaggerGen(c =>
