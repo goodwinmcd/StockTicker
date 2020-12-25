@@ -96,7 +96,7 @@ namespace RedditMonitor.Logic
             public RedditMessageType Source { get => RedditMessageType.Post; }
             public string RedditId { get => _base.Id; }
             public DateTime CreatedWrap { get => _base.Created; }
-            public string Content { get => _base.Title ?? _base.Body; }
+            public string Content { get => _base.Title; }
             public string SubredditWrap { get => _base.Subreddit; }
         }
 
@@ -110,7 +110,7 @@ namespace RedditMonitor.Logic
             public RedditMessageType Source { get => RedditMessageType.Comment; }
             public string RedditId { get => _base.Id; }
             public DateTime CreatedWrap { get => _base.Created; }
-            public string Content { get => _base.Title ?? _base.Body; }
+            public string Content { get =>  _base.Body; }
             public string SubredditWrap { get => _base.Subreddit; }
         }
     }

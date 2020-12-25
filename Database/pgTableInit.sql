@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS RedditMessage (
     source TEXT,
     subreddit TEXT,
     redditId TEXT,
-    timePosted TIMESTAMP,
+    timePosted TimeStamp,
     message TEXT
 );
 

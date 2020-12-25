@@ -57,7 +57,9 @@ namespace RedditMonitorWorker.Logic
                     CheckRetryAndReque(body, ch, ea);
                 }
             }
-            _rabbitConsumer.BasicAck(ea.DeliveryTag, false);
+            else{
+                _rabbitConsumer.BasicAck(ea.DeliveryTag, false);
+            }
         }
 
         private void CheckRetryAndReque(QueueMessage message, object ch, BasicDeliverEventArgs ea)

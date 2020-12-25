@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Models;
 using Dapper;
-using NpgsqlTypes;
 
 namespace RedditApi.DataAccess
 {
@@ -13,22 +11,27 @@ namespace RedditApi.DataAccess
     {
         public async Task<int> InsertRedditMessage(RedditMessage message, IDbConnection conn)
         {
-            var sql = @"INSERT INTO redditMessage
+            var sql = @"INSERT INTO redditMessage(
+                source,
+                subreddit,
+                redditid,
+                timeposted,
+                message
+            )
                 VALUES (
                     @Source,
                     @SubReddit,
                     @RedditId,
-                    TO_TIMESTAMP(@TimePosted, YYYY/MM/DD HH:MM:SS),
-                    @Message);
-                SELECT CAST(SCOPE_IDENTITY() as int)";
+                    @TimePosted,
+                    @Message) RETURNING id";
             if(await MessageExists(message, conn))
             {
                 return -1;
             }
             else
             {
-                var test = message.TimePosted.ToString();
-                var result = await conn.QueryAsync(sql, new {
+                var test = message.TimePosted.ToString("yyyy-MM-DD HH:mm:ss");
+                var result = await conn.QueryAsync<int>(sql, new {
                     Source = message.Source,
                     SubReddit = message.SubReddit,
                     RedditId = message.RedditId,
@@ -44,13 +47,15 @@ namespace RedditApi.DataAccess
             var listOfInserts = new List<Task>();
             foreach (var ticker in message.Tickers)
             {
-                var sql = @"INSERT INTO stockTickersRedditMessage
+                var sql = @"INSERT INTO stockTickersRedditMessage(
+                    redditMessageId,
+                    stocktickerid
+                )
                     VALUES(
                         @id,
                         @ticker)";
-                    listOfInserts.Add(conn.ExecuteAsync(sql, new {id = id, ticker = ticker }));
+                    await conn.ExecuteAsync(sql, new {id = id, ticker = ticker.ToUpper() });
             }
-            await Task.WhenAll(listOfInserts);
         }
 
         private async Task<bool> MessageExists(RedditMessage message, IDbConnection conn)
