@@ -1,32 +1,39 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Common.Models;
 using CsvHelper;
-using System.IO.Compression;
 using System.Globalization;
 using CsvHelper.Configuration.Attributes;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Text;
-using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 
 namespace LoadStockTickers
 {
     class Program
     {
-        private static Dictionary<string, string> urlList = new Dictionary<string, string>()
+        private static Dictionary<string, string> _urlList = new Dictionary<string, string>()
         {
             { "ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt", "nasdaq.csv" },
             { "ftp://ftp.nasdaqtrader.com/SymbolDirectory/otherlisted.txt", "others.csv"}
         };
+
+        private static Dictionary<string, string> _exchangeMapper = new Dictionary<string, string>()
+        {
+            { "A", "NYSEMKT" },
+            { "N", "NYSE" },
+            { "P", "NYSEARCA" },
+            { "Z", "BATS" },
+            { "V", "IEXG" },
+            { "nasdaq", "NASDAQ" }
+        };
         static void Main(string[] args)
         {
-            foreach (KeyValuePair<string, string> url in urlList)
+            foreach (KeyValuePair<string, string> url in _urlList)
             {
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create(url.Key);
                 request.Method = WebRequestMethods.Ftp.DownloadFile;
@@ -52,8 +59,8 @@ namespace LoadStockTickers
 
             }
 
-            var listOfNasdaqTickers = BuildList("nasdaq.csv");
-            var listOfOtherTickers = BuildList("others.csv");
+            var listOfNasdaqTickers = BuildList<CsvTickerNasdaqModel>("nasdaq.csv");
+            var listOfOtherTickers = BuildList<CsvTickerOtherModel>("others.csv");
             var allTickers = listOfNasdaqTickers.Concat(listOfOtherTickers);
 
             var content = new StringContent(
@@ -81,7 +88,7 @@ namespace LoadStockTickers
             }
         }
 
-        private static List<StockTicker> BuildList(string file)
+        private static List<StockTicker> BuildList<T>(string file) where T : NasdaqTickerModel
         {
             // remove timestamp at end of file
             var lines = File.ReadAllLines(file);
@@ -94,12 +101,13 @@ namespace LoadStockTickers
                 csvReader.Configuration.Delimiter = "|";
                 while(csvReader.Read())
                 {
-                    var record = csvReader.GetRecord<CsvTickerNasdaqModel>();
+                    var record = csvReader.GetRecord<T>();
+                    _exchangeMapper.TryGetValue(record.Exchange, out string exchange);
                     returnList.Add(new StockTicker
                     {
-                        NasdaqSymbol = record.Symbol,
-                        Exchange = "nasdaq",
-                        SecurityName = record.Name
+                        NasdaqSymbol = record.Symbol.ToUpper(),
+                        Exchange = exchange,
+                        SecurityName = record.SecurityName
                     });
                 }
             }
@@ -108,12 +116,20 @@ namespace LoadStockTickers
     }
     // ACT Symbol|Security Name|Exchange|CQS Symbol|ETF|Round Lot Size|Test Issue|NASDAQ Symbol
 
-    public class CsvTickerNasdaqModel
+    public interface NasdaqTickerModel
     {
+        string Symbol { get; set; }
+        string Exchange { get; }
+        string SecurityName { get; set; }
+    }
+
+    public class CsvTickerNasdaqModel : NasdaqTickerModel
+    {
+        private string _exchange = "nasdaq";
         [Index(0)]
         public string Symbol { get; set; }
         [Index(1)]
-        public string Name { get; set; }
+        public string SecurityName { get; set; }
         [Index(2)]
         public string LastSale { get; set; }
         [Index(3)]
@@ -126,9 +142,10 @@ namespace LoadStockTickers
         public string industry { get; set; }
         [Index(7)]
         public string Summary { get; set; }
+        public string Exchange => _exchange;
     }
 
-    public class CsvTickerOtherModel
+    public class CsvTickerOtherModel : NasdaqTickerModel
     {
         [Index(0)]
         public string ActSymbol { get; set; }
@@ -145,6 +162,6 @@ namespace LoadStockTickers
         [Index(6)]
         public string TestIssue { get; set; }
         [Index(7)]
-        public string NasdaqSymbol { get; set; }
+        public string Symbol { get; set; }
     }
 }

@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Models;
 using Dapper;
+using NpgsqlTypes;
 
 namespace RedditApi.DataAccess
 {
@@ -16,24 +18,24 @@ namespace RedditApi.DataAccess
                     @Source,
                     @SubReddit,
                     @RedditId,
-                    @TimePosted,
+                    TO_TIMESTAMP(@TimePosted, YYYY/MM/DD HH:MM:SS),
                     @Message);
                 SELECT CAST(SCOPE_IDENTITY() as int)";
-            try
+            if(await MessageExists(message, conn))
             {
-                if(! await MessageExists(message, conn))
-                {
-                    return -1;
-                }
-                else
-                {
-                    var result = await conn.QueryAsync(sql, message);
-                    return result.Single();
-                }
+                return -1;
             }
-            finally
+            else
             {
-                conn.Close();
+                var test = message.TimePosted.ToString();
+                var result = await conn.QueryAsync(sql, new {
+                    Source = message.Source,
+                    SubReddit = message.SubReddit,
+                    RedditId = message.RedditId,
+                    TimePosted = message.TimePosted,
+                    Message = message.Message
+                });
+                return result.Single();
             }
         }
 

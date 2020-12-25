@@ -33,6 +33,7 @@ namespace RedditApi.Logic
                         {
                             await _commentsRepo.InsertRedditTickerMessage(message, inserted, _connection);
                             await transaction.CommitAsync();
+                            return inserted;
                         }
                         catch (Exception ex)
                         {

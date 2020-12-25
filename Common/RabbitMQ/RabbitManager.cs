@@ -1,21 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Text;
 using System.Threading;
-using Newtonsoft.Json;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 
 namespace Common.RabbitMQ
 {
-    public class RabbitManager : IRabbitManager
+    public abstract class RabbitManager
     {
-        private static IConnection _connection;
-        private static IModel _channel;
-        private static readonly String _exchangeName = ConfigurationManager.AppSettings["rabbitExchange"];
-        private static readonly String _queueName = ConfigurationManager.AppSettings["rabbitQueue"];
-        private static readonly String _rabbitHost = ConfigurationManager.AppSettings["rabbitmqHost"];
+        protected static IConnection _connection;
+        protected static IModel _channel;
+        protected static readonly String _exchangeName = ConfigurationManager.AppSettings["rabbitExchange"];
+        protected static readonly String _queueName = ConfigurationManager.AppSettings["rabbitQueue"];
+        protected static readonly String _rabbitHost = ConfigurationManager.AppSettings["rabbitmqHost"];
 
         public RabbitManager()
         {
@@ -28,12 +26,16 @@ namespace Common.RabbitMQ
             {
                 HostName = _rabbitHost,
                 RequestedHeartbeat = new TimeSpan(30),
-                DispatchConsumersAsync =false,
+                DispatchConsumersAsync = true,
             };
             _connection = factory.CreateConnection();
             _connection.ConnectionShutdown += C_ConnectionShutdown;
             _channel = _connection.CreateModel();
             _channel.ExchangeDeclare(_exchangeName, ExchangeType.Direct);
+            IDictionary<string, string> args = new Dictionary<string, string>()
+            {
+                {"x-dead-letter-exchange", ""},
+            };
             _channel.QueueDeclare(_queueName, false, false, false, null);
             _channel.QueueBind(_queueName, _exchangeName, _queueName, null);
         }
@@ -54,23 +56,11 @@ namespace Common.RabbitMQ
                     _connection = null;
                 }
             }
-            catch(IOException ex)
+            catch
             {
                 // Close() may throw an IOException if connection
                 // dies - but that's ok (handled by reconnect)
             }
-        }
-
-        public void Publish<T>(T message, string routeKey) where T : class
-        {
-            if (message == null)
-                return;
-
-            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
-            _channel.BasicPublish(exchange: _exchangeName,
-                routingKey: "reddit-comments",
-                basicProperties: null,
-                body: body);
         }
 
         private static void C_ConnectionShutdown(
@@ -87,7 +77,7 @@ namespace Common.RabbitMQ
                     Console.WriteLine("Reconnected!");
                     break;
                 }
-                catch (Exception ex)
+                catch
                 {
                     Console.WriteLine("Reconnect failed!");
                     Thread.Sleep(3000);
@@ -95,17 +85,6 @@ namespace Common.RabbitMQ
             }
         }
 
-        public EventingBasicConsumer GetAsyncConsumer()
-            => new EventingBasicConsumer(_channel);
 
-        public void RegisterConsumer(EventingBasicConsumer consumer)
-        {
-            _channel.BasicConsume(queue: _queueName, consumer: consumer);
-        }
-
-        public void BasicAck(ulong deliveryTag, bool multimessage)
-        {
-            _channel.BasicAck(deliveryTag, multimessage);
-        }
     }
 }

@@ -38,6 +38,8 @@ namespace RedditApi
             // services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(dbConnectionString.ToString()));
             services.AddScoped<IStockTickerRepo, StockTickerRepo>();
             services.AddScoped<IStockTickerService, StockTickerService>();
+            services.AddScoped<IRedditMessageService, RedditMessageService>();
+            services.AddScoped<IRedditMessageRepo, RedditMessageRepo>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RedditApi", Version = "v1" });

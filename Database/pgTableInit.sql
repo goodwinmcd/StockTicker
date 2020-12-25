@@ -1,4 +1,4 @@
-sCREATE TABLE IF NOT EXISTS StockTickers (
+CREATE TABLE IF NOT EXISTS StockTickers (
     nasdaqSymbol TEXT PRIMARY KEY,
     Exchange TEXT,
     SecurityName Text
@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS RedditMessage (
     source TEXT,
     subreddit TEXT,
     redditId TEXT,
-    timePosted TIMESTAMP WITH TIME ZONE,
-    message TEXT,
+    timePosted TIMESTAMP,
+    message TEXT
 );
 
 CREATE TABLE IF NOT EXISTS stockTickersRedditMessage(
@@ -19,6 +19,6 @@ CREATE TABLE IF NOT EXISTS stockTickersRedditMessage(
     PRIMARY KEY (redditMessageId, stockTickerId),
   FOREIGN KEY (redditMessageId)
       REFERENCES RedditMessage(id),
-  FOREIGN KEY (stockTickers)
-      REFERENCES actor (nasdaqSymbol)
-)
+  FOREIGN KEY (stockTickerId)
+      REFERENCES StockTickers (nasdaqSymbol)
+);

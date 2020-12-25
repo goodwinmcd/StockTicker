@@ -29,7 +29,7 @@ namespace RedditApi.DataAccess
                     return true;
                 }
             }
-            catch (PostgresException ex)
+            catch
             {
                 return false;
             }

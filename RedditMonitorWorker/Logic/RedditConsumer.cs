@@ -1,45 +1,99 @@
 using System.Text;
 using Common.Models;
-using Common.RabbitMQ;
 using Newtonsoft.Json;
 using RabbitMQ.Client.Events;
 using System.Linq;
 using System;
-using System.Collections.Generic;
+using System.Net.Http;
+using System.Net;
+using System.Threading.Tasks;
+using Common.RabbitMQ;
+using System.Text.RegularExpressions;
+
 namespace RedditMonitorWorker.Logic
 {
     public class RedditConsumer : IRedditConsumer
     {
-        public readonly IRabbitManager _rabbitManager;
-        private IEnumerable<string> _stockTickers;
+        public readonly  IRabbitPublisher _rabbitPublisher;
+        public readonly  IRabbitConsumer _rabbitConsumer;
+        private IStockTickerManager _stockTickerManager;
+        private readonly String _routingKey = "reddit-comments";
 
         public RedditConsumer(
-            IRabbitManager rabbitManager,
-            IStockTickerManager StockTickerManager)
+            IRabbitPublisher rabbitPublisher,
+            IRabbitConsumer rabbitManager,
+            IStockTickerManager stockTickerManager)
         {
-            _rabbitManager = rabbitManager;
-            _stockTickers = StockTickerManager.AllStockTickers;
+            _rabbitPublisher = rabbitPublisher;
+            _rabbitConsumer = rabbitManager;
+            _stockTickerManager = stockTickerManager;
         }
 
         public void Consume()
         {
-            var consumer = _rabbitManager.GetAsyncConsumer();
+            var consumer = _rabbitConsumer.GetAsyncConsumer();
             consumer.Received += C_ConsumeMessage;
-            _rabbitManager.RegisterConsumer(consumer);
+            _rabbitConsumer.RegisterConsumer(consumer);
         }
 
-        private void C_ConsumeMessage(object ch, BasicDeliverEventArgs ea)
+        private async Task C_ConsumeMessage(object ch, BasicDeliverEventArgs ea)
         {
             var content = Encoding.UTF8.GetString(ea.Body.ToArray());
-            var body = JsonConvert.DeserializeObject<RedditMessage>(content);
-            var messageWords = StripPunctuation(body.Message).Split(' ');
-            var foundStockTickers = _stockTickers.Intersect(messageWords);
+            var body = JsonConvert.DeserializeObject<QueueMessage>(content);
+            var messageWords = StripNewLines(StripPunctuation(body.MessageContent.Message)).Split(' ');
+            var foundStockTickers = _stockTickerManager.FindMatchingTickers(messageWords);
             if (foundStockTickers.Any())
             {
-                // call api to store value
+                body.MessageContent.Tickers = foundStockTickers;
+                try
+                {
+                    if(await CallApi(body.MessageContent))
+                        _rabbitConsumer.BasicAck(ea.DeliveryTag, false);
+                    else
+                        CheckRetryAndReque(body, ch, ea);
+                }
+                catch
+                {
+                    CheckRetryAndReque(body, ch, ea);
+                }
             }
-            _rabbitManager.BasicAck(ea.DeliveryTag, false);
+            _rabbitConsumer.BasicAck(ea.DeliveryTag, false);
         }
+
+        private void CheckRetryAndReque(QueueMessage message, object ch, BasicDeliverEventArgs ea)
+        {
+            if (message.RetryCount < 3)
+            {
+                message.RetryCount++;
+                _rabbitConsumer.BasicAck(ea.DeliveryTag, false);
+                _rabbitPublisher.Publish<QueueMessage>(message, _routingKey);
+            }
+            else
+            {
+                _rabbitConsumer.BasicReject(ea.DeliveryTag, false);
+            }
+        }
+
+        private async Task<bool> CallApi(RedditMessage message)
+        {
+                var content = ConvertToJson(message);
+
+                using (var httpClientHandler = new HttpClientHandler())
+                using (var httpClient = new HttpClient(httpClientHandler))
+                {
+                    httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => {
+                        return true;
+                    };
+                    var result = await httpClient.PostAsync("http://localhost:5000/redditMessage", content);
+                    return result.StatusCode == HttpStatusCode.Created;
+                }
+        }
+
+        private StringContent ConvertToJson(RedditMessage message) =>
+            new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json");
+
+        private string StripNewLines(string s)
+            => s = Regex.Replace(s, @"(?:\r\n|[\r\n])", " ");
 
         private string StripPunctuation(string s)
         {
@@ -47,7 +101,7 @@ namespace RedditMonitorWorker.Logic
             foreach (char c in s)
             {
                 if (char.IsLetter(c) || char.IsWhiteSpace(c))
-                    sb.Append(Char.ToLower(c));
+                    sb.Append(c);
             }
             return sb.ToString();
         }

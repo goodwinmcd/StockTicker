@@ -21,7 +21,7 @@ namespace RedditMonitor
         {
             var services = new ServiceCollection();
             services.AddSingleton<IRedditMonitoring, RedditMonitoring>();
-            services.AddSingleton<IRabbitManager, RabbitManager>();
+            services.AddSingleton<IRabbitPublisher, RabbitPublisher>();
             _serviceProvider = services.BuildServiceProvider(true);
         }
 

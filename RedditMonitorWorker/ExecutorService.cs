@@ -52,7 +52,8 @@ namespace RedditMonitorWorker
 
         private static void RegisterDependencies(ContainerBuilder builder)
         {
-            builder.RegisterType<RabbitManager>().As<IRabbitManager>().SingleInstance();
+            builder.RegisterType<RabbitPublisher>().As<IRabbitPublisher>().SingleInstance();
+            builder.RegisterType<RabbitConsumer>().As<IRabbitConsumer>().SingleInstance();
             builder.RegisterType<StockTickerManager>().As<IStockTickerManager>().SingleInstance();
             builder.RegisterType<RedditConsumer>().As<IRedditConsumer>().SingleInstance();
         }
