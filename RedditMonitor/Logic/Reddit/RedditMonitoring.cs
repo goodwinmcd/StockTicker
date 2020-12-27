@@ -67,7 +67,7 @@ namespace RedditMonitor.Logic
 
                     TraceId = Guid.NewGuid(),
                     MessageContent = new RedditMessage {
-                            Source = RedditMessageType.Comment,
+                            Source = message.Source,
                             SubReddit = subReddit.ToString(),
                             RedditId = message.RedditId,
                             TimePosted = message.CreatedWrap,
