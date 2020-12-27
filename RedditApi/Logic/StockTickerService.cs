@@ -6,6 +6,7 @@ using System.Linq;
 using Common.Models;
 using Npgsql;
 using RedditApi.DataAccess;
+using System.Data;
 
 namespace RedditApi.Logic
 {
@@ -19,6 +20,32 @@ namespace RedditApi.Logic
         {
             _stockTickerRepo = stockTickerRepo;
             _connection = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["pgsql"].ToString());
+        }
+
+        public async Task<IEnumerable<StockTickerCountUi>> GetMostMentionedTickers(
+            DateTime startDate,
+            DateTime endDate,
+            int page)
+        {
+            try
+            {
+                var mostMentionedTickerData = new List<StockTickerCountUi>();
+                await _connection.OpenAsync();
+                var countOfMentionedStockTickers =
+                    await _stockTickerRepo.GetTopMentionedTickers(startDate, endDate, page, _connection);
+                foreach (var ticker in countOfMentionedStockTickers)
+                {
+                    var temp = await _stockTickerRepo.GetStockTickerData(ticker.StockTickerId, _connection);
+                    mostMentionedTickerData.Add(new StockTickerCountUi
+                    {
+                        CountOfOccurences = ticker.CountOfOccurences,
+                        Exchange = temp.Exchange,
+                        SecurityName = temp.SecurityName,
+                        StockTickerId = temp.NasdaqSymbol
+                    });
+                }
+                return mostMentionedTickerData;
+            }
         }
 
         public async Task<IEnumerable<StockTicker>> BulkTickerInsertAsync(IEnumerable<StockTicker> tickers)

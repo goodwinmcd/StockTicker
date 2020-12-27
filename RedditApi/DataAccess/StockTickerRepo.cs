@@ -5,11 +5,36 @@ using Dapper;
 using Npgsql;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace RedditApi.DataAccess
 {
     public class StockTickerRepo : IStockTickerRepo
     {
+
+        public async Task<IEnumerable<StockTickerCount>> GetTopMentionedTickers(
+            DateTime startDate,
+            DateTime endDate,
+            int page,
+            IDbConnection conn)
+        {
+            var offset = page * 50;
+            var sql = @"Select stocktickerid, COUNT(*)
+                FROM stocktickersredditmessage GROUP BY stocktickerid
+                BETWEEN @StartDate AND @EndDate
+                OFFSET @Offset
+                ORDER BY count desc";
+            var result = await conn.QueryAsync<StockTickerCount>(sql);
+            return result;
+        }
+
+        public async Task<StockTicker> GetStockTickerData(string ticker, IDbConnection conn)
+        {
+            var sql = @"SELECT * FROM stocktickers WHERE nasdaqsymbol = @Ticker";
+            var result = await conn.QueryAsync<StockTicker>(sql);
+            return result.FirstOrDefault();
+        }
+
         public async Task<bool> CreateTickerDBAsync(StockTicker ticker, IDbConnection conn)
         {
             var sql = @"INSERT INTO stockTickers

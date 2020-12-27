@@ -24,6 +24,19 @@ namespace RedditApi.Controllers
         }
 
         [HttpGet]
+        [Route("GetTopTickers")]
+        public async Task<IActionResult> GetTopTickers(
+            [FromQuery] DateTime? startDate,
+            [FromQuery] DateTime? endDate,
+            [FromQuery] int page = 0)
+        {
+            var start = startDate ?? DateTime.Now.AddDays(-1);
+            var end= endDate ?? DateTime.Now;
+            var result = await _stockTickerService.GetMostMentionedTickers(start, end, page);
+            return Ok(result);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetAllTickers()
         {
             var result = await _stockTickerService.GetAllTickersAsync();
