@@ -21,6 +21,20 @@ namespace RedditApi.Logic
             _connection = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["pgsql"].ToString());
         }
 
+        public async Task<int> GetPagingInfo(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                await _connection.OpenAsync();
+                var result = await _stockTickerRepo.GetPagingInfo(_connection, startDate, endDate);
+                return result;
+            }
+            finally
+            {
+                await _connection.CloseAsync();
+            }
+        }
+
         public async Task<IEnumerable<StockTickerCountUi>> GetMostMentionedTickers(
             DateTime startDate,
             DateTime endDate,

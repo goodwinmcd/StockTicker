@@ -38,6 +38,18 @@ namespace RedditApi.Controllers
         }
 
         [HttpGet]
+        [Route("GetPagingInfo")]
+        public async Task<IActionResult> GetPagingInfo(
+            [FromQuery] DateTime? startDate,
+            [FromQuery] DateTime? endDate)
+        {
+            var startDateValid = startDate ?? DateTime.Now.AddDays(-1);
+            var endDateValid = endDate ?? DateTime.Now;
+            var result = await _stockTickerService.GetPagingInfo(startDateValid, endDateValid);
+            return Ok(result);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetAllTickers()
         {
             var result = await _stockTickerService.GetAllTickersAsync();
