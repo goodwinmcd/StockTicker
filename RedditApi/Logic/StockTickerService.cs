@@ -35,14 +35,14 @@ namespace RedditApi.Logic
             }
         }
 
-        public async Task<IEnumerable<StockTickerCountUi>> GetMostMentionedTickers(
+        public async Task<IEnumerable<StockTickerWithCount>> GetMostMentionedTickers(
             DateTime startDate,
             DateTime endDate,
             int page)
         {
             try
             {
-                var mostMentionedTickerData = new List<StockTickerCountUi>();
+                var mostMentionedTickerData = new List<StockTickerWithCount>();
                 await _connection.OpenAsync();
                 var countOfMentionedStockTickers =
                     await _stockTickerRepo.GetTopMentionedTickers(
@@ -56,7 +56,7 @@ namespace RedditApi.Logic
                     var temp = await _stockTickerRepo.GetStockTickerData(ticker.StockTickerId, _connection);
                     var volumeIncrease = ConvertVolumeIncrease(
                         todaysCount.CountOfOccurences, previousDaysCount.CountOfOccurences);
-                    mostMentionedTickerData.Add(new StockTickerCountUi
+                    mostMentionedTickerData.Add(new StockTickerWithCount
                     {
                         CountOfOccurences = ticker.CountOfOccurences,
                         Exchange = temp.Exchange,
@@ -77,7 +77,7 @@ namespace RedditApi.Logic
             => Math.Round(((todaysCount - yesterdaysCount) /
                 (yesterdaysCount + todaysCount)) * 100, 2);
 
-        private async Task<StockTickerCount> GetDaysCount(StockTickerCount ticker, DateTime start, DateTime end)
+        private async Task<StockTickerCountDb> GetDaysCount(StockTickerCountDb ticker, DateTime start, DateTime end)
         {
             var countOfTickerInDateRange = await _stockTickerRepo.GetTopMentionedTickers(
                             start,
@@ -85,18 +85,18 @@ namespace RedditApi.Logic
                             0,
                             _connection,
                             ticker.StockTickerId);
-            return countOfTickerInDateRange.FirstOrDefault() ?? new StockTickerCount
+            return countOfTickerInDateRange.FirstOrDefault() ?? new StockTickerCountDb
                         {
                             StockTickerId = ticker.StockTickerId,
                             CountOfOccurences = 0
                         };
         }
 
-        public async Task<IEnumerable<StockTicker>> BulkTickerInsertAsync(IEnumerable<StockTicker> tickers)
+        public async Task<IEnumerable<StockTickerDb>> BulkTickerInsertAsync(IEnumerable<StockTickerDb> tickers)
         {
             try
             {
-                IEnumerable<StockTicker> successfulInserts = new List<StockTicker>();
+                IEnumerable<StockTickerDb> successfulInserts = new List<StockTickerDb>();
                 await _connection.OpenAsync();
                 foreach(var ticker in tickers)
                     if(await _stockTickerRepo.CreateTickerDBAsync(ticker, _connection))
@@ -109,7 +109,7 @@ namespace RedditApi.Logic
             }
         }
 
-        public async Task<IEnumerable<StockTicker>> GetAllTickersAsync()
+        public async Task<IEnumerable<StockTickerDb>> GetAllTickersAsync()
         {
             try
             {

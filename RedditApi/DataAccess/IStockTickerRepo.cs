@@ -8,10 +8,10 @@ namespace RedditApi.DataAccess
 {
     public interface IStockTickerRepo
     {
-        Task<IEnumerable<StockTicker>> GetAllTickersAsync(IDbConnection conn);
-        Task<bool> CreateTickerDBAsync(StockTicker ticker, IDbConnection conn);
-        Task<StockTicker> GetStockTickerData(string ticker, IDbConnection conn);
-        Task<IEnumerable<StockTickerCount>> GetTopMentionedTickers(
+        Task<IEnumerable<StockTickerDb>> GetAllTickersAsync(IDbConnection conn);
+        Task<bool> CreateTickerDBAsync(StockTickerDb ticker, IDbConnection conn);
+        Task<StockTickerDb> GetStockTickerData(string ticker, IDbConnection conn);
+        Task<IEnumerable<StockTickerCountDb>> GetTopMentionedTickers(
             DateTime startDate,
             DateTime endDate,
             int page,

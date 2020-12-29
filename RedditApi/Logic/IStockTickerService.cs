@@ -7,9 +7,9 @@ namespace RedditApi.Logic
 {
     public interface IStockTickerService
     {
-        Task<IEnumerable<StockTicker>> GetAllTickersAsync();
-        Task<IEnumerable<StockTicker>> BulkTickerInsertAsync(IEnumerable<StockTicker> tickers);
-        Task<IEnumerable<StockTickerCountUi>> GetMostMentionedTickers(
+        Task<IEnumerable<StockTickerDb>> GetAllTickersAsync();
+        Task<IEnumerable<StockTickerDb>> BulkTickerInsertAsync(IEnumerable<StockTickerDb> tickers);
+        Task<IEnumerable<StockTickerWithCount>> GetMostMentionedTickers(
             DateTime startDate, DateTime endDate, int page);
         Task<int> GetPagingInfo(DateTime startDate, DateTime endDate);
     }

@@ -41,7 +41,7 @@ namespace RedditMonitorWorker.Logic
                 };
                 var result = httpClient.GetAsync("http://localhost:5000/stockticker").Result;
                 var tickers =
-                    JsonConvert.DeserializeObject<List<StockTicker>>(
+                    JsonConvert.DeserializeObject<List<StockTickerDb>>(
                         result.Content.ReadAsStringAsync().Result);
                 return tickers.Select(t => t.NasdaqSymbol.ToLower());
             }

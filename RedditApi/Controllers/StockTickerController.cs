@@ -57,7 +57,7 @@ namespace RedditApi.Controllers
         }
 
         [HttpPost("Batch")]
-        public async Task<IActionResult> PostBatch(IEnumerable<StockTicker> stockTickers)
+        public async Task<IActionResult> PostBatch(IEnumerable<StockTickerDb> stockTickers)
         {
             var results = await _stockTickerService.BulkTickerInsertAsync(stockTickers);
             return StatusCode(201, results);

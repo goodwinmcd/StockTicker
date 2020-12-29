@@ -1,6 +1,6 @@
 namespace Common.Models
 {
-    public class StockTickerCountUi
+    public class StockTickerWithCount
     {
         public string StockTickerId { get; set; }
         public int CountOfOccurences { get; set; }

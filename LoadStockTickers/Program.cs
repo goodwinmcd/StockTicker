@@ -88,12 +88,12 @@ namespace LoadStockTickers
             }
         }
 
-        private static List<StockTicker> BuildList<T>(string file) where T : NasdaqTickerModel
+        private static List<StockTickerDb> BuildList<T>(string file) where T : NasdaqTickerModel
         {
             // remove timestamp at end of file
             var lines = File.ReadAllLines(file);
             File.WriteAllLines(file, lines.Take(lines.Length - 1).ToArray());
-            var returnList = new List<StockTicker>();
+            var returnList = new List<StockTickerDb>();
             using (var reader = File.OpenText(file))
             using (var csvReader = new CsvReader(reader, CultureInfo.CurrentCulture))
             {
@@ -103,7 +103,7 @@ namespace LoadStockTickers
                 {
                     var record = csvReader.GetRecord<T>();
                     _exchangeMapper.TryGetValue(record.Exchange, out string exchange);
-                    returnList.Add(new StockTicker
+                    returnList.Add(new StockTickerDb
                     {
                         NasdaqSymbol = record.Symbol.ToUpper(),
                         Exchange = exchange,

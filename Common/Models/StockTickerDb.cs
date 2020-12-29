@@ -2,7 +2,7 @@ using System;
 
 namespace Common.Models
 {
-    public class StockTicker
+    public class StockTickerDb
     {
         public String NasdaqSymbol { get; set; }
         public String Exchange { get; set; }
