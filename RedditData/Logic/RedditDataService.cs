@@ -27,5 +27,22 @@ namespace RedditData.Logic
                 }
             }
         }
+
+        public async Task<int> GetPagingData(DateTime startDate, DateTime endDate)
+        {
+            var url = $"http://localhost:5000/stockticker/GetPagingInfo";
+            using (var httpClientHandler = new HttpClientHandler())
+            {
+                httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+                using (var httpClient = new HttpClient(httpClientHandler))
+                {
+                    var httpResponse = await httpClient.GetAsync(url);
+                    var pagingCount =
+                        JsonConvert.DeserializeObject<int>(await httpResponse.Content.ReadAsStringAsync());
+                    return pagingCount;
+                }
+            }
+
+        }
     }
 }
