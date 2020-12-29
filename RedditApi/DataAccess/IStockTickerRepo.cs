@@ -15,6 +15,7 @@ namespace RedditApi.DataAccess
             DateTime startDate,
             DateTime endDate,
             int page,
-            IDbConnection conn);
+            IDbConnection conn,
+            string stockTicker = null);
     }
 }

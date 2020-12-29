@@ -31,8 +31,9 @@ namespace RedditApi.Controllers
             [FromQuery] int page = 0)
         {
             var start = startDate ?? DateTime.Now.AddDays(-1);
-            var end= endDate ?? DateTime.Now;
-            var result = await _stockTickerService.GetMostMentionedTickers(start, end, page);
+            var end = endDate ?? DateTime.Now;
+            var result = await _stockTickerService.GetMostMentionedTickers(
+                start, end, page);
             return Ok(result);
         }
 

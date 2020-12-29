@@ -21,6 +21,7 @@ namespace RedditData
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://localhost:10000/", "https://localhost:10001/");
                 });
     }
 }

@@ -1,0 +1,29 @@
+﻿@Model IEnumerable<RedditData.Models.RedditData>
+
+@{
+    ViewData["Title"] = "Trending Stock Tickers";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+</div>
+
+<div class="container">
+  <div class="row row-cols-1">
+    @foreach (var rd in Model)
+    {
+      <div class="col mb-1">
+        <div class="card h-100" style="width: 15rem;">
+          <div class="card-body">
+            <h5 class="card-title">@rd.StockTickerId</h5>
+            <p class="card-text">@rd.SecurityName</p>
+            <p class="card-text">Count of occurences in date range: @rd.CountOfOccurences</p>
+            @{string style = rd.VolumeIncrease > 0 ? "color:green" : "color:red";}
+            <p class="card-text" style="@style">Change in Volume: @rd.VolumeIncrease%</p>
+            <a href='@string.Format("https://robinhood.com/stocks/{0}", rd.StockTickerId)' class="btn btn-primary" target="_blank">@rd.StockTickerId on Robinhood</a>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
