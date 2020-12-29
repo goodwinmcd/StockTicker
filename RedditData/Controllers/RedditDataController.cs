@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Common.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +26,11 @@ namespace RedditData.Controllers
             var tickers = tickersTask.Result;
             var paging = pagingTask.Result;
             return View(new StockTickerUi { Tickers = tickers, Paging = paging});
+        }
+
+        public IActionResult RedirectToRobinHood([FromQuery] string ticker)
+        {
+            return Redirect($"https://robinhood.com/stocks/{ticker}");
         }
     }
 }

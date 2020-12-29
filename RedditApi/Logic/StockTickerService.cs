@@ -52,7 +52,7 @@ namespace RedditApi.Logic
                     var previousDaysCount =
                         await GetDaysCount(ticker, DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1));
                     var todaysCount =
-                        await GetDaysCount(ticker, DateTime.Now.AddDays(-3), DateTime.Now.AddDays(-2));
+                        await GetDaysCount(ticker, DateTime.Now.AddDays(-1), DateTime.Now);
                     var temp = await _stockTickerRepo.GetStockTickerData(ticker.StockTickerId, _connection);
                     var volumeIncrease = ConvertVolumeIncrease(
                         todaysCount.CountOfOccurences, previousDaysCount.CountOfOccurences);
