@@ -24,11 +24,10 @@ namespace RedditData.Controllers
             var endDateValid = endDate ?? DateTime.Now;
             var tickersTask = _redditDataService.GetTopStockTickersWithCount(startDateValid, endDateValid, 0);
             var pagingTask = _redditDataService.GetPagingData(startDateValid, endDateValid);
-            var results = Task.WhenAll(tickersTask, pagingTask);
+            await Task.WhenAll(tickersTask, pagingTask);
             var tickers = tickersTask.Result;
             var paging = pagingTask.Result;
-            var tickersForView = tickers.Select(t => new StockTickerUi(t, paging));
-            return View(tickersForView);
+            return View(new StockTickerUi { Tickers = tickers, Paging = paging});
         }
     }
 }

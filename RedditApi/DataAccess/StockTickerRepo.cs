@@ -47,8 +47,8 @@ namespace RedditApi.DataAccess
             DateTime endDate)
         {
             var sql = @"SELECT COUNT(DISTINCT strm.stocktickerid) FROM stocktickersredditmessage AS strm";
-            var result = await conn.QueryAsync(sql);
-            return result.FirstOrDefault();
+            var result = await conn.QueryAsync<PagingResultDb>(sql);
+            return result.FirstOrDefault().Count;
         }
 
         public async Task<StockTickerDb> GetStockTickerData(string ticker, IDbConnection conn)
