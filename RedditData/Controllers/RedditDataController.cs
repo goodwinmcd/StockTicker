@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using RedditData.Logic;
 
@@ -19,9 +22,13 @@ namespace RedditData.Controllers
         {
             var startDateValid = startDate ?? DateTime.Now.AddDays(-1);
             var endDateValid = endDate ?? DateTime.Now;
-            var tickers = await _redditDataService.GetTopStockTickersWithCount(
-                startDateValid, endDateValid, 0);
-            return View(tickers);
+            var tickersTask = _redditDataService.GetTopStockTickersWithCount(startDateValid, endDateValid, 0);
+            var pagingTask = _redditDataService.GetPagingData(startDateValid, endDateValid);
+            var results = Task.WhenAll(tickersTask, pagingTask);
+            var tickers = tickersTask.Result;
+            var paging = pagingTask.Result;
+            var tickersForView = tickers.Select(t => new StockTickerUi(t, paging));
+            return View(tickersForView);
         }
     }
 }

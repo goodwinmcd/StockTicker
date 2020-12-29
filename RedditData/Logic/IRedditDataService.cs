@@ -9,5 +9,6 @@ namespace RedditData.Logic
     {
         Task<IEnumerable<StockTickerWithCount>> GetTopStockTickersWithCount(
             DateTime startDate, DateTime endDate, int page);
+        Task<int> GetPagingData(DateTime startDate, DateTime endDate);
     }
 }
