@@ -20,7 +20,7 @@ namespace RedditData.Controllers
         {
             var startDateValid = startDate ?? DateTime.Now.AddDays(-1);
             var endDateValid = endDate ?? DateTime.Now;
-            var tickersTask = _redditDataService.GetTopStockTickersWithCount(startDateValid, endDateValid, 0);
+            var tickersTask = _redditDataService.GetTopStockTickersWithCount(startDateValid, endDateValid, page);
             var pagingTask = _redditDataService.GetPagingData(startDateValid, endDateValid);
             await Task.WhenAll(tickersTask, pagingTask);
             var tickers = tickersTask.Result;

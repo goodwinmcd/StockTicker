@@ -19,6 +19,7 @@ namespace RedditMonitorWorker.Logic
             _commonWordTickers = ListOfCommonTickers.CommonTickerNames;
             // exclude the common word tickers list from stock ticker list
             _stockTickers = LoadStockTickerList().Except(_commonWordTickers, StringComparer.OrdinalIgnoreCase);
+            _stockTickers = _stockTickers.Where(x => !TickersToCompletelyIgnore().Contains(x));
         }
 
         public IEnumerable<string> FindMatchingTickers(IEnumerable<string> message)
@@ -46,5 +47,19 @@ namespace RedditMonitorWorker.Logic
                 return tickers.Select(t => t.NasdaqSymbol.ToLower());
             }
         }
+
+        private IEnumerable<string> TickersToCompletelyIgnore()
+            => new List<string>
+            {
+                "YOLO",
+                "EV",
+                "RH",
+                "C",
+                "F",
+                "A",
+                "DD",
+                "K",
+                "D",
+            };
     }
 }

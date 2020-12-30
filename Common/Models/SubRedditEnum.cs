@@ -15,8 +15,15 @@ namespace Common.Models
         finance,
         forex,
         stock_picks,
+        stock_data,
         stockmarket,
         investmentclub,
         algotrading,
+        buythepanic,
+        thetagang,
+        daytrading,
+        optionsexclusive,
+        redditTickers,
+
     }
 }

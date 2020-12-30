@@ -7,6 +7,9 @@ namespace RedditMonitorWorker.Models
         public static IEnumerable<string> CommonTickerNames { get =>
             new HashSet<string>
             {
+                "R",
+                "G",
+                "M",
                 "HALL",
                 "PAC",
                 "HALO",
@@ -104,6 +107,7 @@ namespace RedditMonitorWorker.Models
                 "NYT",
                 "NYC",
                 "BE",
+                "B",
                 "BEN",
                 "CAN",
                 "CANE",
@@ -242,6 +246,7 @@ namespace RedditMonitorWorker.Models
                 "J",
                 "FILL",
                 "A",
+                "T",
                 "MAIN",
                 "WANT",
                 "WASH",
@@ -525,7 +530,6 @@ namespace RedditMonitorWorker.Models
                 "HIPS",
                 "HI",
                 "C",
-
             };
          }
     }
