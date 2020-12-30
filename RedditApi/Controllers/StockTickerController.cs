@@ -34,7 +34,7 @@ namespace RedditApi.Controllers
             var start = startDate ?? DateTime.Now.AddDays(-1);
             var end = endDate ?? DateTime.Now;
             var result = await _stockTickerService.GetMostMentionedTickers(
-                start, end, page);
+                start, end, page, limit);
             return Ok(result);
         }
 
