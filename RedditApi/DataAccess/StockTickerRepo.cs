@@ -16,11 +16,12 @@ namespace RedditApi.DataAccess
             DateTime startDate,
             DateTime endDate,
             int page,
+            int limit,
             IDbConnection conn,
             string stockTicker = null)
         {
             var sql = new StringBuilder();
-            var offset = page * 16;
+            var offset = page * limit;
             sql.Append(@"SELECT strm.stocktickerid, COUNT(*) AS CountOfOccurences
                         FROM redditMessage AS rm
                         JOIN stocktickersredditmessage AS strm ON rm.id = strm.redditmessageid

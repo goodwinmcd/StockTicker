@@ -28,7 +28,8 @@ namespace RedditApi.Controllers
         public async Task<IActionResult> GetTopTickers(
             [FromQuery] DateTime? startDate,
             [FromQuery] DateTime? endDate,
-            [FromQuery] int page = 0)
+            [FromQuery] int page = 0,
+            [FromQuery] int limit = 16)
         {
             var start = startDate ?? DateTime.Now.AddDays(-1);
             var end = endDate ?? DateTime.Now;

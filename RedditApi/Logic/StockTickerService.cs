@@ -38,7 +38,8 @@ namespace RedditApi.Logic
         public async Task<IEnumerable<StockTickerWithCount>> GetMostMentionedTickers(
             DateTime startDate,
             DateTime endDate,
-            int page)
+            int page,
+            int limit)
         {
             try
             {
