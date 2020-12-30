@@ -19,7 +19,7 @@ namespace RedditApi.Logic
                 ConfigurationManager.ConnectionStrings["pgsql"].ToString());
         }
 
-        public async Task<int> InsertRedditMessage(RedditMessage message)
+        public async Task<int> InsertRedditMessage(FoundMessage message)
         {
             try
             {

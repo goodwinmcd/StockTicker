@@ -47,7 +47,7 @@ namespace RedditApi.Logic
                 await _connection.OpenAsync();
                 var countOfMentionedStockTickers =
                     await _stockTickerRepo.GetTopMentionedTickers(
-                        startDate, endDate, page, _connection);
+                        startDate, endDate, page, limit, _connection);
                 foreach (var ticker in countOfMentionedStockTickers)
                 {
                     var previousDaysCount =
@@ -84,6 +84,7 @@ namespace RedditApi.Logic
                             start,
                             end,
                             0,
+                            16,
                             _connection,
                             ticker.StockTickerId);
             return countOfTickerInDateRange.FirstOrDefault() ?? new StockTickerCountDb

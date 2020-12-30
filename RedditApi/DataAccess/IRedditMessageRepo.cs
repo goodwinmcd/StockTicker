@@ -6,7 +6,7 @@ namespace RedditApi.DataAccess
 {
     public interface IRedditMessageRepo
     {
-        Task<int> InsertRedditMessage(RedditMessage message, IDbConnection conn);
-        Task InsertRedditTickerMessage(RedditMessage message, int messageId, IDbConnection conn);
+        Task<int> InsertRedditMessage(FoundMessage message, IDbConnection conn);
+        Task InsertRedditTickerMessage(FoundMessage message, int messageId, IDbConnection conn);
     }
 }

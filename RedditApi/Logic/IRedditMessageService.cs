@@ -5,6 +5,6 @@ namespace RedditApi.Logic
 {
     public interface IRedditMessageService
     {
-        Task<int> InsertRedditMessage(RedditMessage message);
+        Task<int> InsertRedditMessage(FoundMessage message);
     }
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Common.Models
 {
-    public class RedditMessage
+    public class FoundMessage
     {
-        public RedditMessageType Source { get; set; }
+        public MessageSource Source { get; set; }
         public String SubReddit { get; set; }
         public String RedditId { get; set; }
         public DateTime TimePosted { get; set; }
@@ -13,9 +13,9 @@ namespace Common.Models
         public IEnumerable<string> Tickers {get; set; }
     }
 
-    public enum RedditMessageType
+    public enum MessageSource
     {
-        Post,
-        Comment
+        Twitter,
+        Reddit
     }
 }

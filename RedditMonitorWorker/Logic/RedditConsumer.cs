@@ -76,7 +76,7 @@ namespace RedditMonitorWorker.Logic
             }
         }
 
-        private async Task<bool> CallApi(RedditMessage message)
+        private async Task<bool> CallApi(FoundMessage message)
         {
                 var content = ConvertToJson(message);
 
@@ -91,7 +91,7 @@ namespace RedditMonitorWorker.Logic
                 }
         }
 
-        private StringContent ConvertToJson(RedditMessage message) =>
+        private StringContent ConvertToJson(FoundMessage message) =>
             new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json");
 
         private string StripNewLines(string s)

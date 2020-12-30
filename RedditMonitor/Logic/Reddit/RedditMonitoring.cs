@@ -66,7 +66,7 @@ namespace RedditMonitor.Logic
                 {
 
                     TraceId = Guid.NewGuid(),
-                    MessageContent = new RedditMessage {
+                    MessageContent = new FoundMessage {
                             Source = message.Source,
                             SubReddit = subReddit.ToString(),
                             RedditId = message.RedditId,
@@ -79,7 +79,7 @@ namespace RedditMonitor.Logic
 
         private interface IRedditWrappers
         {
-            public RedditMessageType Source { get; }
+            public MessageSource Source { get; }
             public string RedditId { get; }
             public DateTime CreatedWrap { get; }
             public string Content { get; }
@@ -93,7 +93,7 @@ namespace RedditMonitor.Logic
             {
                 _base = basePost;
             }
-            public RedditMessageType Source { get => RedditMessageType.Post; }
+            public MessageSource Source { get => MessageSource.Reddit; }
             public string RedditId { get => _base.Id; }
             public DateTime CreatedWrap { get => _base.Created; }
             public string Content { get => _base.Title; }
@@ -107,7 +107,7 @@ namespace RedditMonitor.Logic
             {
                 _base = baseComment;
             }
-            public RedditMessageType Source { get => RedditMessageType.Comment; }
+            public MessageSource Source { get => MessageSource.Reddit; }
             public string RedditId { get => _base.Id; }
             public DateTime CreatedWrap { get => _base.Created; }
             public string Content { get =>  _base.Body; }

@@ -10,7 +10,7 @@ namespace RedditApi.DataAccess
 {
     public class RedditMessageRepo : IRedditMessageRepo
     {
-        public async Task<int> InsertRedditMessage(RedditMessage message, IDbConnection conn)
+        public async Task<int> InsertRedditMessage(FoundMessage message, IDbConnection conn)
         {
             var sql = @"INSERT INTO redditMessage(
                 source,
@@ -33,7 +33,7 @@ namespace RedditApi.DataAccess
             {
                 var test = message.TimePosted.ToString("yyyy-MM-DD HH:mm:ss");
                 var result = await conn.QueryAsync<int>(sql, new {
-                    Source = message.Source,
+                    Source = nameof(message.Source),
                     SubReddit = message.SubReddit,
                     RedditId = message.RedditId,
                     TimePosted = message.TimePosted,
@@ -43,7 +43,7 @@ namespace RedditApi.DataAccess
             }
         }
 
-        public async Task InsertRedditTickerMessage(RedditMessage message, int id, IDbConnection conn)
+        public async Task InsertRedditTickerMessage(FoundMessage message, int id, IDbConnection conn)
         {
             var listOfInserts = new List<Task>();
             foreach (var ticker in message.Tickers)
@@ -59,10 +59,10 @@ namespace RedditApi.DataAccess
             }
         }
 
-        private async Task<bool> MessageExists(RedditMessage message, IDbConnection conn)
+        private async Task<bool> MessageExists(FoundMessage message, IDbConnection conn)
         {
             var sql = @"SELECT * FROM redditMessage WHERE redditId=@RedditId";
-            var result = await conn.QueryAsync<RedditMessage>(sql, message);
+            var result = await conn.QueryAsync<FoundMessage>(sql, message);
             return result.Count() != 0;
         }
     }

@@ -23,7 +23,7 @@ namespace RedditApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRedditMessage(RedditMessage message)
+        public async Task<IActionResult> CreateRedditMessage(FoundMessage message)
         {
             try
             {
