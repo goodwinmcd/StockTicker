@@ -86,10 +86,10 @@ namespace RedditApi.Logic
                             _connection,
                             ticker.StockTickerId);
             return countOfTickerInDateRange.FirstOrDefault() ?? new StockTickerCountDb
-                        {
-                            StockTickerId = ticker.StockTickerId,
-                            CountOfOccurences = 0
-                        };
+                {
+                    StockTickerId = ticker.StockTickerId,
+                    CountOfOccurences = 0
+                };
         }
 
         public async Task<IEnumerable<StockTickerDb>> BulkTickerInsertAsync(IEnumerable<StockTickerDb> tickers)

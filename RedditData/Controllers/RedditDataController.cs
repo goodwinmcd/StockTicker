@@ -16,7 +16,7 @@ namespace RedditData.Controllers
         }
 
         public async Task<IActionResult> Index(
-            DateTime? startDate, DateTime? endDate, string stockTicker = null)
+            DateTime? startDate, DateTime? endDate, [FromQuery]int page = 0)
         {
             var startDateValid = startDate ?? DateTime.Now.AddDays(-1);
             var endDateValid = endDate ?? DateTime.Now;
@@ -25,7 +25,12 @@ namespace RedditData.Controllers
             await Task.WhenAll(tickersTask, pagingTask);
             var tickers = tickersTask.Result;
             var paging = pagingTask.Result;
-            return View(new StockTickerUi { Tickers = tickers, Paging = paging});
+            return View(new StockTickerUi
+                {
+                    Tickers = tickers,
+                    Page = page,
+                    TotalPages = paging / 16
+                });
         }
 
         public IActionResult RedirectToRobinHood([FromQuery] string ticker)
