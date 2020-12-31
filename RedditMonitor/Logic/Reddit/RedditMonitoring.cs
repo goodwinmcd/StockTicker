@@ -1,5 +1,6 @@
 using System;
 using System.Configuration;
+using System.Threading.Tasks;
 using Common.Models;
 using Common.RabbitMQ;
 using Reddit;
@@ -22,18 +23,20 @@ namespace RedditMonitor.Logic
             _redditClient = new RedditClient(_redditAppId, _redditOauthKey);
         }
 
-        public void MonitorPosts()
+        public async Task MonitorPostsAsync()
         {
-            foreach (var subreddit in Enum.GetValues(typeof(SubReddit)))
-            {
-                var newSubredditClient = _redditClient.Subreddit(subreddit.ToString());
-                newSubredditClient.Comments.GetNew();
-                newSubredditClient.Comments.MonitorNew();
-                newSubredditClient.Comments.NewUpdated += C_AddNewCommentToQueue;
-                newSubredditClient.Posts.GetNew();
-                newSubredditClient.Posts.MonitorNew();
-                newSubredditClient.Posts.NewUpdated += C_AddNewPostToQueue;
-            }
+            await Task.Factory.StartNew(() => {
+                foreach (var subreddit in Enum.GetValues(typeof(SubReddit)))
+                {
+                    var newSubredditClient = _redditClient.Subreddit(subreddit.ToString());
+                    newSubredditClient.Comments.GetNew();
+                    newSubredditClient.Comments.MonitorNew();
+                    newSubredditClient.Comments.NewUpdated += C_AddNewCommentToQueue;
+                    newSubredditClient.Posts.GetNew();
+                    newSubredditClient.Posts.MonitorNew();
+                    newSubredditClient.Posts.NewUpdated += C_AddNewPostToQueue;
+                }
+            });
         }
 
         private void C_AddNewCommentToQueue(object sender, CommentsUpdateEventArgs eventArgs)

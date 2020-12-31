@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace RedditMonitor.Logic
 {
     public interface IRedditMonitoring
     {
-         void MonitorPosts();
+         Task MonitorPostsAsync();
     }
 }
