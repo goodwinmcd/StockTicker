@@ -18,7 +18,8 @@ namespace RedditApi.DataAccess
             int page,
             int limit,
             IDbConnection conn,
-            string stockTicker = null)
+            string stockTicker = null,
+            string source = null)
         {
             var sql = new StringBuilder();
             var offset = page * limit;
@@ -32,12 +33,13 @@ namespace RedditApi.DataAccess
             sql.Append(@" GROUP BY st.nasdaqsymbol, st.exchange, st.securityname
                         ORDER BY CountOfOccurences desc
                         OFFSET @Offset
-                        LIMIT 16");
+                        LIMIT @Limit");
             var result = await conn.QueryAsync<StockTickerCountDb>(sql.ToString(), new {
                 StartDate = startDate,
                 EndDate = endDate,
                 Offset = offset,
                 StockTicker = stockTicker,
+                Limit = limit,
             });
             return result;
         }

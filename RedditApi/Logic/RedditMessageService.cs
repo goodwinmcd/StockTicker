@@ -23,6 +23,7 @@ namespace RedditApi.Logic
         {
             try
             {
+                message.TimePosted = message.TimePosted.ToUniversalTime();
                 await _connection.OpenAsync();
                 using(var transaction = await _connection.BeginTransactionAsync())
                 {

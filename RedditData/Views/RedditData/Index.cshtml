@@ -15,12 +15,12 @@
       <div class="col mb-1">
         <div class="card h-100" style="width: 15rem;">
           <div class="card-body">
-            <h5 class="card-title">@rd.StockTickerId</h5>
+            <h5 class="card-title">@rd.NasdaqSymbol</h5>
             <p class="card-text">@rd.SecurityName</p>
             <p class="card-text">Count of occurences in date range: @rd.CountOfOccurences</p>
-            @{string style = rd.VolumeIncrease > 0 ? "color:green" : "color:red";}
-            <p class="card-text" style="@style">Change in Volume: @rd.VolumeIncrease%</p>
-            @Html.ActionLink($"{@rd.StockTickerId} on Robinhood", "RedirectToRobinhood", "RedditData", new { ticker = rd.StockTickerId }, new { target="_blank", @class="btn btn-primary" })
+            @{string style = rd.DailyChangeInVolume > 0 ? "color:green" : "color:red";}
+            <p class="card-text" style="@style">Change in Volume: @rd.DailyChangeInVolume%</p>
+            @Html.ActionLink($"{@rd.NasdaqSymbol} on Robinhood", "RedirectToRobinhood", "RedditData", new { ticker = rd.NasdaqSymbol }, new { target="_blank", @class="btn btn-primary" })
           </div>
         </div>
       </div>

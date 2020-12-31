@@ -82,7 +82,7 @@ namespace RedditMonitor.Logic
 
         private interface IRedditWrappers
         {
-            public MessageSource Source { get; }
+            public String Source { get; }
             public string RedditId { get; }
             public DateTime CreatedWrap { get; }
             public string Content { get; }
@@ -96,7 +96,7 @@ namespace RedditMonitor.Logic
             {
                 _base = basePost;
             }
-            public MessageSource Source { get => MessageSource.Reddit; }
+            public String Source { get => MessageSource.Reddit.ToString(); }
             public string RedditId { get => _base.Id; }
             public DateTime CreatedWrap { get => _base.Created; }
             public string Content { get => _base.Title; }
@@ -110,7 +110,7 @@ namespace RedditMonitor.Logic
             {
                 _base = baseComment;
             }
-            public MessageSource Source { get => MessageSource.Reddit; }
+            public String Source { get => MessageSource.Reddit.ToString(); }
             public string RedditId { get => _base.Id; }
             public DateTime CreatedWrap { get => _base.Created; }
             public string Content { get =>  _base.Body; }

@@ -17,7 +17,8 @@ namespace RedditApi.DataAccess
             int page,
             int limit,
             IDbConnection conn,
-            string stockTicker = null);
+            string stockTicker = null,
+            string source = null);
         Task<int> GetPagingInfo(IDbConnection conn, DateTime startDate, DateTime endDate);
     }
 }

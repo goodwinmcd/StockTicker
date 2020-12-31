@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Common.Models;
@@ -52,17 +53,27 @@ namespace RedditMonitor.Logic.Twitter
                 httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
                 using(var httpClient = new HttpClient(httpClientHandler))
                 {
-                    var stockTickers = await httpClient.GetAsync(BuildUrl());
+                    var stockTickers = await httpClient.GetAsync(BuildTopTickersUrl());
                     _tickers = JsonConvert.DeserializeObject<List<StockTickerDb>>(
                             await stockTickers.Content.ReadAsStringAsync());
+                    if (_tickers.Count() == 0)
+                    {
+                        var allTickers = await httpClient.GetAsync(BuildAllTickersUrl());
+                        var tempAllTickers = JsonConvert.DeserializeObject<List<StockTickerDb>>(
+                            await allTickers.Content.ReadAsStringAsync());
+                        _tickers = tempAllTickers.Take(400);
+                    }
                 }
             }
             _lastUpdateTime = DateTime.Now;
             return _tickers;
         }
 
-        private string BuildUrl()
-            => $"http://localhost:5000/stockticker/gettoptickers?limit={400}";
+        private string BuildTopTickersUrl()
+            => $"http://localhost:5000/stockticker/gettoptickers?limit={400}&getVolume={false}&source={MessageSource.Reddit.ToString()}";
+
+        private string BuildAllTickersUrl()
+            => $"http://localhost:5000/stockticker";
 
         private void C_ProcessTweet(object sender, MatchedTweetReceivedEventArgs args)
         {
@@ -93,7 +104,7 @@ namespace RedditMonitor.Logic.Twitter
             {
                 TraceId = Guid.NewGuid(),
                 MessageContent = new FoundMessage {
-                    Source = MessageSource.Twitter,
+                    Source = MessageSource.Twitter.ToString(),
                     SubReddit = null,
                     RedditId = tweet.Id.ToString(),
                     TimePosted = tweet.CreatedAt.UtcDateTime,

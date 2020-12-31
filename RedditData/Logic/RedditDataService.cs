@@ -11,7 +11,7 @@ namespace RedditData.Logic
 {
     public class RedditDataService : IRedditDataService
     {
-        public async Task<IEnumerable<StockTickerWithCount>> GetTopStockTickersWithCount(
+        public async Task<IEnumerable<StockTickerCountDb>> GetTopStockTickersWithCount(
             DateTime startDate, DateTime endDate, int page)
         {
             var url = $"http://localhost:5000/stockticker/GetTopTickers?startDate={startDate}&endDate={endDate}&page={page}";
@@ -22,7 +22,7 @@ namespace RedditData.Logic
                 {
                     var httpResponse = await httpClient.GetAsync(url);
                     var check =
-                        JsonConvert.DeserializeObject<IEnumerable<StockTickerWithCount>>(await httpResponse.Content.ReadAsStringAsync());
+                        JsonConvert.DeserializeObject<IEnumerable<StockTickerCountDb>>(await httpResponse.Content.ReadAsStringAsync());
                     return check;
                 }
             }

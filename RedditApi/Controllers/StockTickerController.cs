@@ -29,14 +29,21 @@ namespace RedditApi.Controllers
             [FromQuery] DateTime? startDate,
             [FromQuery] DateTime? endDate,
             [FromQuery] int page = 0,
-            [FromQuery] int limit = 16)
+            [FromQuery] int limit = 16,
+            [FromQuery] bool getVolume = true,
+            [FromQuery] string source = null)
         {
-            var start = startDate ?? DateTime.Now.AddDays(-1);
-            var end = endDate ?? DateTime.Now;
+            if (!ValidateSource(source))
+                return StatusCode(400, "The source param is not valid");
+            var start = startDate ?? DateTime.Now.AddDays(-1).ToUniversalTime();
+            var end = endDate ?? DateTime.Now.ToUniversalTime();
             var result = await _stockTickerService.GetMostMentionedTickers(
-                start, end, page, limit);
+                start, end, page, limit, getVolume);
             return Ok(result);
         }
+
+        private bool ValidateSource(string source)
+            => source == null ? true : Enum.TryParse<MessageSource>(source, true, out var parsedSource);
 
         [HttpGet]
         [Route("GetPagingInfo")]
