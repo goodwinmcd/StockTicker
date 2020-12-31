@@ -22,14 +22,14 @@ namespace RedditApi.DataAccess
         {
             var sql = new StringBuilder();
             var offset = page * limit;
-            sql.Append(@"SELECT strm.stocktickerid, COUNT(*) AS CountOfOccurences
+            sql.Append(@"SELECT st.nasdaqsymbol, st.exchange, st.securityname, COUNT(*) AS CountOfOccurences
                         FROM redditMessage AS rm
                         JOIN stocktickersredditmessage AS strm ON rm.id = strm.redditmessageid
                         JOIN stocktickers as st ON st.nasdaqsymbol = strm.stocktickerid
                         WHERE rm.timeposted > @StartDate AND rm.timeposted < @EndDate");
             if (stockTicker != null)
                 sql.Append(@" AND strm.stocktickerid = @StockTicker ");
-            sql.Append(@" GROUP BY strm.stocktickerid
+            sql.Append(@" GROUP BY st.nasdaqsymbol, st.exchange, st.securityname
                         ORDER BY CountOfOccurences desc
                         OFFSET @Offset
                         LIMIT 16");

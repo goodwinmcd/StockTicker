@@ -39,7 +39,8 @@ namespace RedditApi.Logic
             DateTime startDate,
             DateTime endDate,
             int page,
-            int limit)
+            int limit,
+            bool getVolume=true)
         {
             try
             {
@@ -48,23 +49,40 @@ namespace RedditApi.Logic
                 var countOfMentionedStockTickers =
                     await _stockTickerRepo.GetTopMentionedTickers(
                         startDate, endDate, page, limit, _connection);
-                foreach (var ticker in countOfMentionedStockTickers)
+                if (getVolume)
                 {
-                    var previousDaysCount =
-                        await GetDaysCount(ticker, DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1));
-                    var todaysCount =
-                        await GetDaysCount(ticker, DateTime.Now.AddDays(-1), DateTime.Now);
-                    var temp = await _stockTickerRepo.GetStockTickerData(ticker.StockTickerId, _connection);
-                    var volumeIncrease = ConvertVolumeIncrease(
-                        todaysCount.CountOfOccurences, previousDaysCount.CountOfOccurences);
-                    mostMentionedTickerData.Add(new StockTickerWithCount
+                    foreach (var ticker in countOfMentionedStockTickers)
                     {
-                        CountOfOccurences = ticker.CountOfOccurences,
-                        Exchange = temp.Exchange,
-                        SecurityName = temp.SecurityName,
-                        StockTickerId = temp.NasdaqSymbol,
-                        VolumeIncrease = volumeIncrease
-                    });
+                        var previousDaysCount =
+                            await GetDaysCount(ticker, DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1));
+                        var todaysCount =
+                            await GetDaysCount(ticker, DateTime.Now.AddDays(-1), DateTime.Now);
+                        //var temp = await _stockTickerRepo.GetStockTickerData(ticker.NasdaqSymbol, _connection);
+                        var volumeIncrease = ConvertVolumeIncrease(
+                            todaysCount.CountOfOccurences, previousDaysCount.CountOfOccurences);
+                        mostMentionedTickerData.Add(new StockTickerWithCount
+                        {
+                            CountOfOccurences = ticker.CountOfOccurences,
+                            Exchange = previousDaysCount.Exchange,
+                            SecurityName = previousDaysCount.SecurityName,
+                            StockTickerId = previousDaysCount.NasdaqSymbol,
+                            VolumeIncrease = volumeIncrease
+                        });
+                    }
+                }
+                if (mostMentionedTickerData.Count == 0)
+                {
+                    foreach (var t in countOfMentionedStockTickers)
+                    {
+                        mostMentionedTickerData.Add(new StockTickerWithCount
+                            {
+                                CountOfOccurences = t.CountOfOccurences,
+                                Exchange = "test",
+                                SecurityName = "test security",
+                                StockTickerId = "test again",
+                                VolumeIncrease = null,
+                            });
+                    }
                 }
                 return mostMentionedTickerData;
             }
@@ -80,16 +98,17 @@ namespace RedditApi.Logic
 
         private async Task<StockTickerCountDb> GetDaysCount(StockTickerCountDb ticker, DateTime start, DateTime end)
         {
-            var countOfTickerInDateRange = await _stockTickerRepo.GetTopMentionedTickers(
-                            start,
-                            end,
-                            0,
-                            16,
-                            _connection,
-                            ticker.StockTickerId);
+            var countOfTickerInDateRange = await
+                _stockTickerRepo.GetTopMentionedTickers(
+                    start,
+                    end,
+                    0,
+                    16,
+                    _connection,
+                    ticker.NasdaqSymbol);
             return countOfTickerInDateRange.FirstOrDefault() ?? new StockTickerCountDb
                 {
-                    StockTickerId = ticker.StockTickerId,
+                    NasdaqSymbol = ticker.NasdaqSymbol,
                     CountOfOccurences = 0
                 };
         }
