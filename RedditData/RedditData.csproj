@@ -5,6 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="bootstrap.datepicker" Version="1.8.0.1" />
     <PackageReference Include="Newtonsoft.json" Version="12.0.3" />
   </ItemGroup>
 

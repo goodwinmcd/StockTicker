@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Common.Models;
 using Common.RabbitMQ;
@@ -37,7 +38,15 @@ namespace RedditMonitor.Logic.Twitter
             _twitterStream = _twitterClient.Streams.CreateFilteredStream();
             SetStreamTrackers();
             _twitterStream.MatchingTweetReceived += C_ProcessTweet;
-            await _twitterStream.StartMatchingAnyConditionAsync();
+            try
+            {
+                await _twitterStream.StartMatchingAnyConditionAsync();
+            }
+            catch
+            {
+                Thread.Sleep(5000);
+                await MonitorTweetsAsync();
+            }
         }
 
         private void SetStreamTrackers()

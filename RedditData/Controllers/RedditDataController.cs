@@ -18,8 +18,8 @@ namespace RedditData.Controllers
         public async Task<IActionResult> Index(
             DateTime? startDate, DateTime? endDate, [FromQuery]int page = 0)
         {
-            var startDateValid = startDate ?? DateTime.Now.AddDays(-1);
-            var endDateValid = endDate ?? DateTime.Now;
+            var startDateValid = startDate ?? DateTime.Now.AddDays(-1).ToUniversalTime();
+            var endDateValid = endDate ?? DateTime.Now.ToUniversalTime();
             var tickersTask = _redditDataService.GetTopStockTickersWithCount(startDateValid, endDateValid, page);
             var pagingTask = _redditDataService.GetPagingData(startDateValid, endDateValid);
             await Task.WhenAll(tickersTask, pagingTask);

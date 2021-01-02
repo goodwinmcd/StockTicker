@@ -54,9 +54,9 @@ namespace RedditApi.Logic
                     foreach (var ticker in countOfMentionedStockTickers)
                     {
                         var previousDaysCount =
-                            await GetDaysCount(ticker, DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1));
+                            await GetDaysCount(ticker, DateTime.Now.AddDays(-2).ToUniversalTime(), DateTime.Now.AddDays(-1).ToUniversalTime());
                         var todaysCount =
-                            await GetDaysCount(ticker, DateTime.Now.AddDays(-1), DateTime.Now);
+                            await GetDaysCount(ticker, DateTime.Now.AddDays(-1).ToUniversalTime(), DateTime.Now.ToUniversalTime());
 
                         ticker.DailyChangeInVolume = ConvertVolumeIncrease(
                             todaysCount.CountOfOccurences, previousDaysCount.CountOfOccurences);
@@ -80,6 +80,8 @@ namespace RedditApi.Logic
                 _stockTickerRepo.GetTopMentionedTickers(start, end, 0, 1, _connection, ticker.NasdaqSymbol);
             return countOfTickerInDateRange.FirstOrDefault() ?? new StockTickerCountDb
                 {
+                    Exchange = ticker.Exchange,
+                    SecurityName = ticker.SecurityName,
                     NasdaqSymbol = ticker.NasdaqSymbol,
                     CountOfOccurences = 0
                 };
