@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Common.Models;
 using Common.RabbitMQ;
 using Newtonsoft.Json;
+using RedditMonitor.Model;
 using Tweetinvi;
 using Tweetinvi.Events;
 using Tweetinvi.Models;
@@ -23,13 +24,16 @@ namespace RedditMonitor.Logic.Twitter
         private IEnumerable<StockTickerDb> _tickers;
         private DateTime _lastUpdateTime;
         private readonly String _routingKey = "reddit-comments";
+        private IServiceConfigurations _serviceConfigurations;
 
         public TwitterMonitoring(
             ITwitterClient twitterClient,
-            IRabbitPublisher rabbitPublisher)
+            IRabbitPublisher rabbitPublisher,
+            IServiceConfigurations serviceConfigurations)
         {
             _twitterClient = twitterClient;
             _rabbitPublisher = rabbitPublisher;
+            _serviceConfigurations = serviceConfigurations;
             _tickers = LoadTickersAsync().Result;
         }
 
@@ -79,10 +83,10 @@ namespace RedditMonitor.Logic.Twitter
         }
 
         private string BuildTopTickersUrl()
-            => $"http://localhost:5000/stockticker/gettoptickers?limit={400}&getVolume={false}&source={MessageSource.Reddit.ToString()}";
+            => $"{_serviceConfigurations.ApiUrl}/stockticker/gettoptickers?limit={400}&getVolume={false}&source={MessageSource.Reddit.ToString()}";
 
         private string BuildAllTickersUrl()
-            => $"http://localhost:5000/stockticker";
+            => $"{_serviceConfigurations.ApiUrl}/stockticker";
 
         private void C_ProcessTweet(object sender, MatchedTweetReceivedEventArgs args)
         {

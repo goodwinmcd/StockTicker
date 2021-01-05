@@ -52,7 +52,7 @@ namespace RedditApi.Controllers
             => (startDate == null && endDate == null) || endDate > startDate;
 
         private bool ValidatePage(int page)
-            => page > 0;
+            => page >= 0;
 
         [HttpGet]
         [Route("GetPagingInfo")]

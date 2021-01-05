@@ -6,21 +6,26 @@ using Common.RabbitMQ;
 using Reddit;
 using Reddit.Controllers;
 using Reddit.Controllers.EventArgs;
+using RedditMonitor.Model;
 
 namespace RedditMonitor.Logic
 {
     public class RedditMonitoring : IRedditMonitoring
     {
         private readonly IRabbitPublisher _rabbitPublisher;
-        private readonly String _redditAppId = ConfigurationManager.AppSettings["reddit_app_id"];
-        private readonly String _redditOauthKey = ConfigurationManager.AppSettings["reddit_oauth_key"];
         private readonly String _routingKey = "reddit-comments";
         private readonly RedditClient _redditClient;
+        private readonly IServiceConfigurations _serviceConfigurations;
 
-        public RedditMonitoring(IRabbitPublisher rabbitManager)
+        public RedditMonitoring(
+            IRabbitPublisher rabbitManager,
+            IServiceConfigurations serviceConfigurations)
         {
             _rabbitPublisher = rabbitManager;
-            _redditClient = new RedditClient(_redditAppId, _redditOauthKey);
+            _serviceConfigurations = serviceConfigurations;
+            _redditClient = new RedditClient(
+                _serviceConfigurations.RedditAppId,
+                _serviceConfigurations.RedditOAuthKey);
         }
 
         public async Task MonitorPostsAsync()
@@ -47,7 +52,7 @@ namespace RedditMonitor.Logic
                 _rabbitPublisher.Publish<QueueMessage>(payload, _routingKey);
 
             }
-            var dept = ConfigurationManager.AppSettings["rabbitmqHost"];
+            var dept = _serviceConfigurations.QueueHost;
         }
 
         private void C_AddNewPostToQueue(object sender, PostsUpdateEventArgs eventArgs)
@@ -58,7 +63,7 @@ namespace RedditMonitor.Logic
                 _rabbitPublisher.Publish<QueueMessage>(payload, _routingKey);
 
             }
-            var dept = ConfigurationManager.AppSettings["rabbitmqHost"];
+            var dept = _serviceConfigurations.QueueHost;
         }
 
         private QueueMessage BuildRedditQueueMessageFromRedditMessage(IRedditWrappers message)
