@@ -2,6 +2,7 @@ using System;
 using Autofac;
 using Common.RabbitMQ;
 using RedditMonitorWorker.Logic;
+using RedditMonitorWorker.ServiceConfiguration;
 using Topshelf;
 
 namespace RedditMonitorWorker
@@ -52,10 +53,11 @@ namespace RedditMonitorWorker
 
         private static void RegisterDependencies(ContainerBuilder builder)
         {
-            builder.RegisterType<RabbitPublisher>().As<IRabbitPublisher>().SingleInstance();
+            builder.RegisterType<ServiceConfigurations>().As<IServiceConfigurations, IRabbitConfigurations>().SingleInstance();
             builder.RegisterType<RabbitConsumer>().As<IRabbitConsumer>().SingleInstance();
             builder.RegisterType<StockTickerManager>().As<IStockTickerManager>().SingleInstance();
             builder.RegisterType<RedditConsumer>().As<IRedditConsumer>().SingleInstance();
+            builder.RegisterType<RabbitPublisher>().As<IRabbitPublisher>().SingleInstance();
         }
     }
 }
