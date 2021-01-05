@@ -33,17 +33,26 @@ namespace RedditApi.Controllers
             [FromQuery] bool getVolume = true,
             [FromQuery] string source = null)
         {
-            if (!ValidateSource(source))
-                return StatusCode(400, "The source param is not valid");
+            if (!ValidateInput(startDate, endDate, page, source))
+                return StatusCode(400, "The input is not valid. Check dates, source, and page params");
             var start = startDate ?? DateTime.Now.AddDays(-1).ToUniversalTime();
             var end = endDate ?? DateTime.Now.ToUniversalTime();
             var result = await _stockTickerService.GetMostMentionedTickers(
-                start, end, page, limit, getVolume);
+                start, end, page, limit, getVolume, source);
             return Ok(result);
         }
 
+        private bool ValidateInput(DateTime? startDate, DateTime? endDate, int page, string source)
+            => ValidateSource(source) & ValidateDate(startDate, endDate) & ValidatePage(page);
+
         private bool ValidateSource(string source)
             => source == null ? true : Enum.TryParse<MessageSource>(source, true, out var parsedSource);
+
+        private bool ValidateDate(DateTime? startDate, DateTime? endDate)
+            => (startDate == null && endDate == null) || endDate > startDate;
+
+        private bool ValidatePage(int page)
+            => page > 0;
 
         [HttpGet]
         [Route("GetPagingInfo")]

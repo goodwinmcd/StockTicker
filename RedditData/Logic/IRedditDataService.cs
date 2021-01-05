@@ -8,7 +8,7 @@ namespace RedditData.Logic
     public interface IRedditDataService
     {
         Task<IEnumerable<StockTickerCountDb>> GetTopStockTickersWithCount(
-            DateTime startDate, DateTime endDate, int page);
+            DateTime startDate, DateTime endDate, int page, string source = null);
         Task<int> GetPagingData(DateTime startDate, DateTime endDate);
     }
 }

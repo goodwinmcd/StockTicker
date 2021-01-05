@@ -16,11 +16,14 @@ namespace RedditData.Controllers
         }
 
         public async Task<IActionResult> Index(
-            DateTime? startDate, DateTime? endDate, [FromQuery]int page = 0)
+            DateTime? startDate,
+            DateTime? endDate,
+            [FromQuery]int page = 0,
+            [FromQuery] string source = null)
         {
             var startDateValid = startDate ?? DateTime.Now.AddDays(-1).ToUniversalTime();
             var endDateValid = endDate ?? DateTime.Now.ToUniversalTime();
-            var tickersTask = _redditDataService.GetTopStockTickersWithCount(startDateValid, endDateValid, page);
+            var tickersTask = _redditDataService.GetTopStockTickersWithCount(startDateValid, endDateValid, page, source);
             var pagingTask = _redditDataService.GetPagingData(startDateValid, endDateValid);
             await Task.WhenAll(tickersTask, pagingTask);
             var tickers = tickersTask.Result;
@@ -29,7 +32,10 @@ namespace RedditData.Controllers
                 {
                     Tickers = tickers,
                     Page = page,
-                    TotalPages = paging / 16
+                    TotalPages = paging / 16,
+                    Source = source ?? "All",
+                    StartDate = startDateValid,
+                    EndDate = endDateValid,
                 });
         }
 

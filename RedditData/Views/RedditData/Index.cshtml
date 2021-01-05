@@ -1,23 +1,36 @@
-﻿@model Common.Models.StockTickerUi
+﻿@using System.Globalization
+@model Common.Models.StockTickerUi
 
 @{
     ViewData["Title"] = "Trending Stock Tickers";
 }
 
-<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Source Selection
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="#">All</a>
-    <a class="dropdown-item" href="#">Twitter</a>
-    <a class="dropdown-item" href="#">Reddit</a>
-  </div>
-</div>
-
 <div class="text-center">
     <h1 class="display-4">@ViewData["Title"]</h1>
 </div>
+
+<div style="width:100%; text-align:center; margin-bottom: 10px;">
+  <div class="dropdown" style="display:inline-block;">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Source Selection
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      @Html.ActionLink("All", "Index", "RedditData", new { page = 0 }, new { @class="dropdown-item" })
+      @Html.ActionLink("Twitter", "Index", "RedditData", new { page = 0, source="twitter" }, new { @class="dropdown-item", aria_labelledby="dropdownMenuButton" })
+      @Html.ActionLink("Reddit", "Index", "RedditData", new { page = 0, source="reddit" }, new { @class="dropdown-item", aria_labelledby="dropdownMenuButton" })
+    </div>
+  </div>
+  <div style="display:inline-block; margin-left:10px;">
+    <label for="startdate" class="form-label" style="font-size:120%; font-weight:bold;">Start Date: </label> <input id=startDate value=@Model.StartDate.Date.ToString("yyyy-MM-dd") type="date" id="start" name="trip-start" max=@Model.EndDate.Date.ToString("yyyy-MM-dd")>
+  </div>
+  <div style="display:inline-block; margin-left:10px;">
+    <label for="enddate" class="form-label" style="font-size:120%; font-weight:bold;">End Date: </label> <input id=endDate value=@Model.EndDate.Date.ToString("yyyy-MM-dd") type="date" id="start" name="trip-start" min=@Model.StartDate.Date.ToString("yyyy-MM-dd") max=@DateTime.Now.Date.ToString("yyyy-MM-dd")>
+  </div>
+  <div style="display:inline-block; margin-left:10px;">
+    <button type="button" class="btn btn-primary" onclick="reloadDataWithSelectedDates()">Submit Dates</button>
+  </div>
+</div>
+
 
 <div class="container">
   <div class="row row-cols-1">
@@ -62,3 +75,28 @@
     </li>
   </ul>
 </nav>
+@section Scripts
+{
+  <script>
+    document.getElementById("startDate").addEventListener("change", function(e) {
+      var splitDate = e.target.value.split('-');
+      var day = parseInt(splitDate[2], 10) + 1;
+      var newMinDate = `${splitDate[0]}-${splitDate[1]}-${day}`
+      document.getElementById("endDate").setAttribute("min", newMinDate);
+    });
+    document.getElementById("endDate").addEventListener("change", function(e) {
+      var splitDate = e.target.value.split('-');
+      var day = parseInt(splitDate[2], 10) - 1;
+      var newMaxDate = `${splitDate[0]}-${splitDate[1]}-${day}`
+      document.getElementById("startDate").setAttribute("max", e.target.value);
+    });
+
+    function reloadDataWithSelectedDates() {
+      var startDate = document.getElementById('startDate').value;
+      var endDate = document.getElementById('endDate').value;
+      console.log(startDate);
+      console.log(endDate);
+      window.location.href = `redditData/index?startDate=${startDate}&endDate=${endDate}`;
+    }
+  </script>
+}

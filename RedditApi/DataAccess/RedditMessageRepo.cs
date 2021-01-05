@@ -33,7 +33,7 @@ namespace RedditApi.DataAccess
             {
                 var test = message.TimePosted.ToString("yyyy-MM-DD HH:mm:ss");
                 var result = await conn.QueryAsync<int>(sql, new {
-                    Source = message.Source,
+                    Source = message.Source.ToLower(),
                     SubReddit = message.SubReddit,
                     RedditId = message.RedditId,
                     TimePosted = message.TimePosted,

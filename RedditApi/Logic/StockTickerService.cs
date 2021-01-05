@@ -48,7 +48,7 @@ namespace RedditApi.Logic
                 await _connection.OpenAsync();
                 var countOfMentionedStockTickers =
                     await _stockTickerRepo.GetTopMentionedTickers(
-                        startDate, endDate, page, limit, _connection, source);
+                        startDate, endDate, page, limit, _connection, source: source);
                 if (getVolume)
                 {
                     foreach (var ticker in countOfMentionedStockTickers)

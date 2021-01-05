@@ -95,11 +95,18 @@ namespace RedditMonitor.Logic.Twitter
         {
             if (DateTime.Now.Hour - _lastUpdateTime.Hour > 1)
             {
-                _twitterStream.Stop();
-                await LoadTickersAsync();
-                _twitterStream = _twitterClient.Streams.CreateFilteredStream();
-                SetStreamTrackers();
-                await _twitterStream.StartMatchingAnyConditionAsync();
+                    _twitterStream.Stop();
+                    await LoadTickersAsync();
+                    _twitterStream = _twitterClient.Streams.CreateFilteredStream();
+                    SetStreamTrackers();
+                try
+                {
+                    await _twitterStream.StartMatchingAnyConditionAsync();
+                }
+                catch
+                {
+                    await MonitorTweetsAsync();
+                }
             }
         }
 

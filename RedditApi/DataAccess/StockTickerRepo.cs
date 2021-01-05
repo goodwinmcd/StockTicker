@@ -30,6 +30,8 @@ namespace RedditApi.DataAccess
                         WHERE rm.timeposted > @StartDate AND rm.timeposted < @EndDate");
             if (stockTicker != null)
                 sql.Append(@" AND strm.stocktickerid = @StockTicker ");
+            if (source != null)
+                sql.Append(@" AND rm.source = @Source ");
             sql.Append(@" GROUP BY st.nasdaqsymbol, st.exchange, st.securityname
                         ORDER BY CountOfOccurences desc
                         OFFSET @Offset
@@ -40,6 +42,7 @@ namespace RedditApi.DataAccess
                 Offset = offset,
                 StockTicker = stockTicker,
                 Limit = limit,
+                Source = source,
             });
             return result;
         }
