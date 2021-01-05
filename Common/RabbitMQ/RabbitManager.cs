@@ -11,12 +11,15 @@ namespace Common.RabbitMQ
     {
         protected static IConnection _connection;
         protected static IModel _channel;
-        protected static readonly String _exchangeName = ConfigurationManager.AppSettings["rabbitExchange"];
-        protected static readonly String _queueName = ConfigurationManager.AppSettings["rabbitQueue"];
-        protected static readonly String _rabbitHost = ConfigurationManager.AppSettings["rabbitmqHost"];
+        protected static String _exchangeName = ConfigurationManager.AppSettings["rabbitExchange"];
+        protected static String _queueName = ConfigurationManager.AppSettings["rabbitQueue"];
+        protected static String _rabbitHost = ConfigurationManager.AppSettings["rabbitmqHost"];
 
-        public RabbitManager()
+        public RabbitManager(IRabbitConfigurations configs)
         {
+            _exchangeName = configs.QueueExchange;
+            _queueName = configs.Queue;
+            _rabbitHost = configs.QueueHost;
             Connect();
         }
 

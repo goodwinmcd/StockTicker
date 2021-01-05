@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 using Common.Models;
 using Common.RabbitMQ;
 using Newtonsoft.Json;
-using RedditMonitor.Model;
+using RedditMonitor.Configurations;
 using Tweetinvi;
 using Tweetinvi.Events;
 using Tweetinvi.Models;

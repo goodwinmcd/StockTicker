@@ -5,7 +5,7 @@ using Common.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 using RedditMonitor.Logic;
 using RedditMonitor.Logic.Twitter;
-using RedditMonitor.Model;
+using RedditMonitor.Configurations;
 using Tweetinvi;
 using Tweetinvi.Models;
 
@@ -30,10 +30,11 @@ namespace RedditMonitor
         {
             var configurations = new ServiceConfigurations();
             var services = new ServiceCollection();
+            services.AddSingleton<IRabbitConfigurations>(configurations);
+            services.AddSingleton<IServiceConfigurations>(configurations);
             services.AddSingleton<IRedditMonitoring, RedditMonitoring>();
             services.AddSingleton<ITwitterMonitoring, TwitterMonitoring>();
             services.AddSingleton<IRabbitPublisher, RabbitPublisher>();
-            services.AddSingleton<IServiceConfigurations>(configurations);
             services.AddSingleton<ITwitterClient>(new TwitterClient(BuildTwitterCreds(configurations)));
             _serviceProvider = services.BuildServiceProvider(true);
         }

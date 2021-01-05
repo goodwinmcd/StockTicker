@@ -6,6 +6,10 @@ namespace Common.RabbitMQ
 {
     public class RabbitPublisher : RabbitManager, IRabbitPublisher
     {
+        public RabbitPublisher(IRabbitConfigurations configs) : base(configs)
+        {
+        }
+
         public void Publish<T>(T message, string routeKey) where T : class
         {
             if (message == null)

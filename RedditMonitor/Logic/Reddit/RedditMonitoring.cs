@@ -1,12 +1,11 @@
 using System;
-using System.Configuration;
 using System.Threading.Tasks;
 using Common.Models;
 using Common.RabbitMQ;
 using Reddit;
 using Reddit.Controllers;
 using Reddit.Controllers.EventArgs;
-using RedditMonitor.Model;
+using RedditMonitor.Configurations;
 
 namespace RedditMonitor.Logic
 {

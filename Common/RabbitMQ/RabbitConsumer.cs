@@ -5,6 +5,10 @@ namespace Common.RabbitMQ
 {
     public class RabbitConsumer :  RabbitManager, IRabbitConsumer
     {
+        public RabbitConsumer(IRabbitConfigurations configs) : base(configs)
+        {
+        }
+
         public AsyncEventingBasicConsumer GetAsyncConsumer()
             => new AsyncEventingBasicConsumer(_channel);
 
