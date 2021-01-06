@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RedditData.Configurations;
 using RedditData.Logic;
 
 namespace RedditData
@@ -26,6 +27,7 @@ namespace RedditData
         {
             services.AddControllersWithViews();
             services.AddScoped<IRedditDataService, RedditDataService>();
+            services.AddScoped<IServiceConfigurations, ServiceConfigurations>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -7,15 +7,23 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Models;
 using Newtonsoft.Json;
+using RedditData.Configurations;
 
 namespace RedditData.Logic
 {
     public class RedditDataService : IRedditDataService
     {
+        private readonly IServiceConfigurations _configurations;
+
+        public RedditDataService(IServiceConfigurations configurations)
+        {
+            _configurations = configurations;
+        }
+
         public async Task<IEnumerable<StockTickerCountDb>> GetTopStockTickersWithCount(
             DateTime startDate, DateTime endDate, int page, string source=null)
         {
-            var url = $"http://localhost:5000/stockticker/GetTopTickers?startDate={startDate}&endDate={endDate}&page={page}";
+            var url = $"{_configurations.ApiUrl}/stockticker/GetTopTickers?startDate={startDate}&endDate={endDate}&page={page}";
             var sb = new StringBuilder(url);
             if (source != null)
                 sb.Append($"&source={source}");
@@ -35,7 +43,7 @@ namespace RedditData.Logic
 
         public async Task<int> GetPagingData(DateTime startDate, DateTime endDate)
         {
-            var url = $"http://localhost:5000/stockticker/GetPagingInfo";
+            var url = $"{_configurations.ApiUrl}/stockticker/GetPagingInfo";
             using (var httpClientHandler = new HttpClientHandler())
             {
                 httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;

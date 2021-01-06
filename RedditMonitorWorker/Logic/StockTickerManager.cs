@@ -5,6 +5,7 @@ using System.Net.Http;
 using Common.Models;
 using Newtonsoft.Json;
 using RedditMonitorWorker.Models;
+using RedditMonitorWorker.ServiceConfiguration;
 
 namespace RedditMonitorWorker.Logic
 {
@@ -13,9 +14,11 @@ namespace RedditMonitorWorker.Logic
 
         private IEnumerable<string> _stockTickers;
         private IEnumerable<string> _commonWordTickers;
+        private readonly IServiceConfigurations _serviceConfigurations;
 
-        public StockTickerManager()
+        public StockTickerManager(IServiceConfigurations serviceConfigurations)
         {
+            _serviceConfigurations = serviceConfigurations;
             _commonWordTickers = ListOfCommonTickers.CommonTickerNames;
             // exclude the common word tickers list from stock ticker list
             _stockTickers = LoadStockTickerList().Except(_commonWordTickers, StringComparer.OrdinalIgnoreCase);
@@ -40,7 +43,7 @@ namespace RedditMonitorWorker.Logic
                 httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => {
                     return true;
                 };
-                var result = httpClient.GetAsync("http://localhost:5000/stockticker").Result;
+                var result = httpClient.GetAsync($"{_serviceConfigurations.ApiUrl}/stockticker").Result;
                 var tickers =
                     JsonConvert.DeserializeObject<List<StockTickerDb>>(
                         result.Content.ReadAsStringAsync().Result);

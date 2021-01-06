@@ -16,17 +16,20 @@ namespace RedditMonitorWorker.Logic
     {
         public readonly  IRabbitPublisher _rabbitPublisher;
         public readonly  IRabbitConsumer _rabbitConsumer;
-        private IStockTickerManager _stockTickerManager;
+        private readonly IStockTickerManager _stockTickerManager;
+        private readonly IServiceConfigurations _serviceConfigurations;
         private readonly String _routingKey = "reddit-comments";
 
         public RedditConsumer(
             IRabbitPublisher rabbitPublisher,
             IRabbitConsumer rabbitManager,
-            IStockTickerManager stockTickerManager)
+            IStockTickerManager stockTickerManager,
+            IServiceConfigurations serviceConfigurations)
         {
             _rabbitPublisher = rabbitPublisher;
             _rabbitConsumer = rabbitManager;
             _stockTickerManager = stockTickerManager;
+            _serviceConfigurations = serviceConfigurations;
         }
 
         public void Consume()
