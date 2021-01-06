@@ -22,7 +22,7 @@ namespace RedditMonitor.Logic.Twitter
         private IFilteredStream _twitterStream;
         private IEnumerable<StockTickerDb> _tickers;
         private DateTime _lastUpdateTime;
-        private readonly String _routingKey = "reddit-comments";
+        private readonly String _routingKey = "messagesToProcess";
         private IServiceConfigurations _serviceConfigurations;
 
         public TwitterMonitoring(

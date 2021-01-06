@@ -11,9 +11,9 @@ namespace Common.RabbitMQ
     {
         protected static IConnection _connection;
         protected static IModel _channel;
-        protected static String _exchangeName = ConfigurationManager.AppSettings["rabbitExchange"];
-        protected static String _queueName = ConfigurationManager.AppSettings["rabbitQueue"];
-        protected static String _rabbitHost = ConfigurationManager.AppSettings["rabbitmqHost"];
+        protected static String _exchangeName;
+        protected static String _queueName;
+        protected static String _rabbitHost;
 
         public RabbitManager(IRabbitConfigurations configs)
         {

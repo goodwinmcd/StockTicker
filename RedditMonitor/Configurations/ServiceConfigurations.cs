@@ -1,20 +1,36 @@
 using System.Configuration;
 using Common.RabbitMQ;
+using Microsoft.Extensions.Configuration;
 
 namespace RedditMonitor.Configurations
 {
     public class ServiceConfigurations : IServiceConfigurations, IRabbitConfigurations
     {
-        public string QueueHost { get; } = ConfigurationManager.AppSettings["rabbitmqHost"];
-        public string QueueExchange { get; } = ConfigurationManager.AppSettings["rabbitExchange"];
-        public string Queue { get; } = ConfigurationManager.AppSettings["rabbitQueue"];
-        public string RedditAppId { get; } = ConfigurationManager.AppSettings["reddit_app_id"];
-        public string RedditOAuthKey { get; } = ConfigurationManager.AppSettings["reddit_oauth_key"];
-        public string TwitterApiKey { get; } = ConfigurationManager.AppSettings["twitter_api_key"];
-        public string TwitterApiSecret { get; } = ConfigurationManager.AppSettings["twitter_api_secret"];
-        public string TwitterAccessToken { get; } = ConfigurationManager.AppSettings["twitter_access_token"];
-        public string TwitterAccessSecret { get; } = ConfigurationManager.AppSettings["twitter_access_secret"];
-        public string TwitterBearerToken { get; } = ConfigurationManager.AppSettings["twitter_bearer_token"];
-        public string ApiUrl { get; } = ConfigurationManager.AppSettings["api_url"];
+        public ServiceConfigurations(IConfiguration configs)
+        {
+            QueueHost = configs["rabbitmq:host"];
+            QueueExchange = configs["rabbitmq:exchange"];
+            Queue = configs["rabbitmq:queue"];
+            RedditAppId = configs["redditApi:appId"];
+            RedditOAuthKey = configs["redditApi:oauthKey"];
+            TwitterApiKey = configs["twitterApi:apiKey"];
+            TwitterApiSecret = configs["twitterApi:apiSecret"];
+            TwitterAccessToken = configs["twitterApi:accessToken"];
+            TwitterAccessSecret = configs["twitterApi:accessSecret"];
+            TwitterBearerToken = configs["twitter:bearerToken"];
+            ApiUrl = configs["api:url"];
+        }
+
+        public string QueueHost { get; }
+        public string QueueExchange { get; }
+        public string Queue { get; }
+        public string RedditAppId { get; }
+        public string RedditOAuthKey { get; }
+        public string TwitterApiKey { get; }
+        public string TwitterApiSecret { get; }
+        public string TwitterAccessToken { get; }
+        public string TwitterAccessSecret { get; }
+        public string TwitterBearerToken { get; }
+        public string ApiUrl { get; }
     }
 }

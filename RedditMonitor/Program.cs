@@ -8,6 +8,7 @@ using RedditMonitor.Logic.Twitter;
 using RedditMonitor.Configurations;
 using Tweetinvi;
 using Tweetinvi.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace RedditMonitor
 {
@@ -26,10 +27,12 @@ namespace RedditMonitor
             DisposeServices();
         }
 
+
         private static void RegisterServices()
         {
-            var configurations = new ServiceConfigurations();
             var services = new ServiceCollection();
+            var appConfigurations = RegisterConfigurations();
+            var configurations = new ServiceConfigurations(appConfigurations);
             services.AddSingleton<IRabbitConfigurations>(configurations);
             services.AddSingleton<IServiceConfigurations>(configurations);
             services.AddSingleton<IRedditMonitoring, RedditMonitoring>();
@@ -38,6 +41,12 @@ namespace RedditMonitor
             services.AddSingleton<ITwitterClient>(new TwitterClient(BuildTwitterCreds(configurations)));
             _serviceProvider = services.BuildServiceProvider(true);
         }
+
+        private static IConfiguration RegisterConfigurations()
+            => new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
 
         private static TwitterCredentials BuildTwitterCreds(IServiceConfigurations serviceConfigurations)
         {

@@ -12,7 +12,7 @@ namespace RedditMonitor.Logic
     public class RedditMonitoring : IRedditMonitoring
     {
         private readonly IRabbitPublisher _rabbitPublisher;
-        private readonly String _routingKey = "reddit-comments";
+        private readonly String _routingKey = "messagesToProcess";
         private readonly RedditClient _redditClient;
         private readonly IServiceConfigurations _serviceConfigurations;
 

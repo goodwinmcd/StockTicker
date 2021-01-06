@@ -9,6 +9,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Common.RabbitMQ;
 using System.Text.RegularExpressions;
+using RedditMonitorWorker.ServiceConfiguration;
 
 namespace RedditMonitorWorker.Logic
 {
@@ -89,7 +90,7 @@ namespace RedditMonitorWorker.Logic
                     httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => {
                         return true;
                     };
-                    var result = await httpClient.PostAsync("http://localhost:5000/redditMessage", content);
+                    var result = await httpClient.PostAsync($"{_serviceConfigurations.ApiUrl}/redditMessage", content);
                     return result.StatusCode == HttpStatusCode.Created;
                 }
         }

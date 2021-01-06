@@ -18,7 +18,7 @@ namespace Common.RabbitMQ
             var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
                 _channel.BasicPublish(
                     exchange: _exchangeName,
-                    routingKey: "reddit-comments",
+                    routingKey: "messagesToProcess",
                     basicProperties: null,
                     body: body);
         }
