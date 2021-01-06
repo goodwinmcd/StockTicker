@@ -1,6 +1,8 @@
 using System;
 using Autofac;
 using Common.RabbitMQ;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using RedditMonitorWorker.Logic;
 using RedditMonitorWorker.ServiceConfiguration;
 using Topshelf;
@@ -12,11 +14,12 @@ namespace RedditMonitorWorker
 
         private static IRedditConsumer _worker;
         private static IContainer _container;
+        private static IServiceProvider _serviceProvider;
 
         private static void BootstrapService()
         {
-            _container = Configure();
-            _worker = _container.Resolve<IRedditConsumer>();
+            Configure();
+            _worker = _serviceProvider.GetService<IRedditConsumer>();
         }
 
         public bool Start(HostControl hostControl)
@@ -35,29 +38,43 @@ namespace RedditMonitorWorker
 
         public bool Stop(HostControl hostControl)
         {
-            _container?.Dispose();
+            DisposeServices();
             return true;
         }
 
-        private static IContainer Configure()
+        private static void Configure()
         {
-            var builder = new ContainerBuilder();
-
             //Registration of Dependencies
-            RegisterDependencies(builder);
-
-            var container = builder.Build();
-
-            return container;
+            RegisterDependencies();
         }
 
-        private static void RegisterDependencies(ContainerBuilder builder)
+        private static void RegisterDependencies()
         {
-            builder.RegisterType<ServiceConfigurations>().As<IServiceConfigurations, IRabbitConfigurations>().SingleInstance();
-            builder.RegisterType<RabbitConsumer>().As<IRabbitConsumer>().SingleInstance();
-            builder.RegisterType<StockTickerManager>().As<IStockTickerManager>().SingleInstance();
-            builder.RegisterType<RedditConsumer>().As<IRedditConsumer>().SingleInstance();
-            builder.RegisterType<RabbitPublisher>().As<IRabbitPublisher>().SingleInstance();
+            var services = new ServiceCollection();
+            var appConfigurations = RegisterConfigurations();
+            var configurations = new ServiceConfigurations(appConfigurations);
+            services.AddSingleton<IRabbitConfigurations>(configurations);
+            services.AddSingleton<IServiceConfigurations>(configurations);
+            services.AddSingleton<IRabbitConsumer, RabbitConsumer>();
+            services.AddSingleton<IStockTickerManager, StockTickerManager>();
+            services.AddSingleton<IRedditConsumer, RedditConsumer>();
+            services.AddSingleton<IRabbitPublisher, RabbitPublisher>();
+            _serviceProvider = services.BuildServiceProvider(true);
         }
+
+        private static IConfiguration RegisterConfigurations()
+            => new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
+
+        private static void DisposeServices()
+        {
+            if(_serviceProvider == null)
+                return;
+            if (_serviceProvider is IDisposable)
+                ((IDisposable)_serviceProvider).Dispose();
+        }
+
     }
 }

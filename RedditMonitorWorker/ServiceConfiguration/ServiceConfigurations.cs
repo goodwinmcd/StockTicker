@@ -1,15 +1,22 @@
 using System.Configuration;
 using Common.RabbitMQ;
+using Microsoft.Extensions.Configuration;
 
 namespace RedditMonitorWorker.ServiceConfiguration
 {
     public class ServiceConfigurations : IServiceConfigurations, IRabbitConfigurations
     {
-        public string QueueHost { get; } = ConfigurationManager.AppSettings["rabbitmqHost"];
-        public string QueueExchange { get; } = ConfigurationManager.AppSettings["rabbitExchange"];
-        public string Queue { get; } = ConfigurationManager.AppSettings["rabbitQueue"];
-        public string RedditAppId { get; } = ConfigurationManager.AppSettings["reddit_app_id"];
-        public string RedditOauthKey { get; } = ConfigurationManager.AppSettings["reddit_oauth_key"];
-        public string ApiUrl { get; } = ConfigurationManager.AppSettings["api_url"];
+        public ServiceConfigurations(IConfiguration configs)
+        {
+            QueueHost = configs["rabbitmq:host"];
+            QueueExchange = configs["rabbitmq:exchange"];
+            Queue = configs["rabbitmq:queue"];
+            ApiUrl = configs["api:url"];
+        }
+
+        public string QueueHost { get; }
+        public string QueueExchange { get; }
+        public string Queue { get; }
+        public string ApiUrl { get; }
     }
 }

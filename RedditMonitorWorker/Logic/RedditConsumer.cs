@@ -19,7 +19,7 @@ namespace RedditMonitorWorker.Logic
         public readonly  IRabbitConsumer _rabbitConsumer;
         private readonly IStockTickerManager _stockTickerManager;
         private readonly IServiceConfigurations _serviceConfigurations;
-        private readonly String _routingKey = "reddit-comments";
+        private readonly String _routingKey = "messagesToProcess";
 
         public RedditConsumer(
             IRabbitPublisher rabbitPublisher,
