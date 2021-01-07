@@ -13,6 +13,9 @@ namespace RedditMonitorWorker.ServiceConfiguration
             QueueExchange = configs["rabbitmq:exchange"];
             QueuePort = Int32.Parse(configs["rabbitmq:port"]);
             Queue = configs["rabbitmq:queue"];
+            SslEnabled = Boolean.Parse(configs["rabbitmq:sslEnabled"]);
+            QueueUserName = configs["rabbitmq:username"];
+            QueuePassword = configs["rabbitmq:password"];
             ApiUrl = configs["api:url"];
         }
 
@@ -21,5 +24,8 @@ namespace RedditMonitorWorker.ServiceConfiguration
         public int QueuePort { get; }
         public string Queue { get; }
         public string ApiUrl { get; }
+        public bool SslEnabled { get; }
+        public string QueueUserName { get; }
+        public string QueuePassword { get; }
     }
 }

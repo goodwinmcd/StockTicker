@@ -10,7 +10,9 @@
 
 
   <ItemGroup>
+    <PackageReference Include="Amazon.Extensions.Configuration.SystemsManager" Version="2.0.0" />
     <PackageReference Include="autofac" Version="6.1.0" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.101" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />

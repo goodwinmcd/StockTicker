@@ -66,6 +66,14 @@ namespace RedditMonitorWorker
             => new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddEnvironmentVariables()
+                .AddSystemsManager(awsConfigs => {
+                    awsConfigs.AwsOptions = new Amazon.Extensions.NETCore.Setup.AWSOptions
+                    {
+                        Profile = "socialmediadata",
+                        Region = Amazon.RegionEndpoint.USWest2
+                    };
+                    awsConfigs.Path = "/SocialMedia";
+                })
                 .Build();
 
         private static void DisposeServices()
