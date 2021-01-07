@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Net.Security;
 using System.Threading;
 using RabbitMQ.Client;
 
@@ -14,12 +15,20 @@ namespace Common.RabbitMQ
         protected static String _exchangeName;
         protected static String _queueName;
         protected static String _rabbitHost;
+        protected static string _username;
+        protected static string _password;
+        protected static bool _sslEnabled;
+        protected static int _port;
 
         public RabbitManager(IRabbitConfigurations configs)
         {
             _exchangeName = configs.QueueExchange;
             _queueName = configs.Queue;
             _rabbitHost = configs.QueueHost;
+            _port = configs.QueuePort;
+            _sslEnabled = configs.SslEnabled;
+            _username = configs.QueueUserName;
+            _password = configs.QueuePassword;
             Connect();
         }
 
@@ -28,9 +37,17 @@ namespace Common.RabbitMQ
             var factory = new ConnectionFactory()
             {
                 HostName = _rabbitHost,
+                UserName = _username,
+                Password = _password,
+                Port = _port,
                 RequestedHeartbeat = new TimeSpan(30),
                 DispatchConsumersAsync = true,
             };
+            factory.Ssl.Enabled = _sslEnabled;
+            // Don't give a damn about certs
+            factory.Ssl.AcceptablePolicyErrors = System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors
+                                            | System.Net.Security.SslPolicyErrors.RemoteCertificateNameMismatch
+                                            | System.Net.Security.SslPolicyErrors.RemoteCertificateNotAvailable;
             _connection = factory.CreateConnection();
             _connection.ConnectionShutdown += C_ConnectionShutdown;
             _channel = _connection.CreateModel();

@@ -1,3 +1,4 @@
+using System;
 using System.Configuration;
 using Common.RabbitMQ;
 using Microsoft.Extensions.Configuration;
@@ -10,12 +11,14 @@ namespace RedditMonitorWorker.ServiceConfiguration
         {
             QueueHost = configs["rabbitmq:host"];
             QueueExchange = configs["rabbitmq:exchange"];
+            QueuePort = Int32.Parse(configs["rabbitmq:port"]);
             Queue = configs["rabbitmq:queue"];
             ApiUrl = configs["api:url"];
         }
 
         public string QueueHost { get; }
         public string QueueExchange { get; }
+        public int QueuePort { get; }
         public string Queue { get; }
         public string ApiUrl { get; }
     }

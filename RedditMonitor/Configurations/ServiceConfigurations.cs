@@ -1,3 +1,4 @@
+using System;
 using System.Configuration;
 using Common.RabbitMQ;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,10 @@ namespace RedditMonitor.Configurations
             QueueHost = configs["rabbitmq:host"];
             QueueExchange = configs["rabbitmq:exchange"];
             Queue = configs["rabbitmq:queue"];
+            QueueUserName = configs["rabbitmq:username"];
+            QueuePassword = configs["rabbitmq:password"];
+            QueuePort = Int32.Parse(configs["rabbitmq:port"]);
+            SslEnabled = Boolean.Parse(configs["rabbitmq:sslEnabled"]);
             RedditAppId = configs["redditApi:appId"];
             RedditOAuthKey = configs["redditApi:oauthKey"];
             TwitterApiKey = configs["twitterApi:apiKey"];
@@ -32,5 +37,9 @@ namespace RedditMonitor.Configurations
         public string TwitterAccessSecret { get; }
         public string TwitterBearerToken { get; }
         public string ApiUrl { get; }
+        public int QueuePort { get; }
+        public bool SslEnabled { get; }
+        public string QueueUserName { get; }
+        public string QueuePassword { get; }
     }
 }
