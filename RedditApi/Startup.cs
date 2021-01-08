@@ -1,3 +1,4 @@
+using System;
 using System.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using RedditApi.DataAccess;
 using RedditApi.Logic;
+using RedditMonitor.Configurations;
 
 namespace RedditApi
 {
@@ -22,10 +24,11 @@ namespace RedditApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            InitilizeDb();
             services.AddControllers();
             var dbConnectionString = ConfigurationManager.ConnectionStrings["pgsql"];
             // services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(dbConnectionString.ToString()));
+            services.AddSingleton<IServiceConfigurations>(new ServiceConfigurations(Configuration));
             services.AddScoped<IStockTickerRepo, StockTickerRepo>();
             services.AddScoped<IStockTickerService, StockTickerService>();
             services.AddScoped<IRedditMessageService, RedditMessageService>();
@@ -34,6 +37,14 @@ namespace RedditApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RedditApi", Version = "v1" });
             });
+        }
+
+        private void InitilizeDb()
+        {
+            var initializeDb = new InitializeDb(
+                Configuration.GetConnectionString("stockTickerConnectionString"),
+                Configuration.GetConnectionString("adminConnectionString"));
+            initializeDb.InitializeDbAndTablesAsync().Wait();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

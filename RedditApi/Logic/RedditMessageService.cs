@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Common.Models;
 using Npgsql;
 using RedditApi.DataAccess;
+using RedditMonitor.Configurations;
 
 namespace RedditApi.Logic
 {
@@ -12,11 +13,12 @@ namespace RedditApi.Logic
         private readonly NpgsqlConnection _connection;
         private readonly IRedditMessageRepo _commentsRepo;
 
-        public RedditMessageService(IRedditMessageRepo commentsRepo)
+        public RedditMessageService(
+            IServiceConfigurations configurations,
+            IRedditMessageRepo commentsRepo)
         {
             _commentsRepo = commentsRepo;
-            _connection = new NpgsqlConnection(
-                ConfigurationManager.ConnectionStrings["pgsql"].ToString());
+            _connection = new NpgsqlConnection(configurations.dbConnectionString);
         }
 
         public async Task<int> InsertRedditMessage(FoundMessage message)

@@ -6,6 +6,7 @@ using System.Linq;
 using Common.Models;
 using Npgsql;
 using RedditApi.DataAccess;
+using RedditMonitor.Configurations;
 
 namespace RedditApi.Logic
 {
@@ -15,10 +16,12 @@ namespace RedditApi.Logic
         private readonly NpgsqlConnection _connection;
 
 
-        public StockTickerService(IStockTickerRepo stockTickerRepo)
+        public StockTickerService(
+            IServiceConfigurations configurations,
+            IStockTickerRepo stockTickerRepo)
         {
             _stockTickerRepo = stockTickerRepo;
-            _connection = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["pgsql"].ToString());
+            _connection = new NpgsqlConnection(configurations.dbConnectionString);
         }
 
         public async Task<int> GetPagingInfo(DateTime startDate, DateTime endDate)
