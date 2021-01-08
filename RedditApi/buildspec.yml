@@ -6,4 +6,4 @@ phases:
             dotnet: 5.0
     build:
         commands:
-            - dotnet build -c Release ./RedditApi.csproj
+            - dotnet build -c Release ./RedditApi/RedditApi.csproj
