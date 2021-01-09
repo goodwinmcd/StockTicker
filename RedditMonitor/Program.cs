@@ -9,15 +9,22 @@ using RedditMonitor.Configurations;
 using Tweetinvi;
 using Tweetinvi.Models;
 using Microsoft.Extensions.Configuration;
+using Amazon.Extensions.NETCore.Setup;
 
 namespace RedditMonitor
 {
     class Program
     {
         private static IServiceProvider _serviceProvider;
+        private static string _env;
+        private static AWSOptions _awsOptions = new AWSOptions {
+            Profile = "socialmediadata",
+            Region = Amazon.RegionEndpoint.USWest2
+        };
 
         static void Main(string[] args)
         {
+            _env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             RegisterServices();
             var redditMonitoring = _serviceProvider.GetService<IRedditMonitoring>();
             var twitterMonitoring = _serviceProvider.GetService<ITwitterMonitoring>();
@@ -45,14 +52,15 @@ namespace RedditMonitor
         private static IConfiguration RegisterConfigurations()
             => new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{_env}.json")
                 .AddEnvironmentVariables()
                 .AddSystemsManager(awsConfigs => {
-                    awsConfigs.AwsOptions = new Amazon.Extensions.NETCore.Setup.AWSOptions
-                    {
-                        Profile = "socialmediadata",
-                        Region = Amazon.RegionEndpoint.USWest2
-                    };
-                    awsConfigs.Path = "/SocialMedia";
+                    awsConfigs.AwsOptions = _awsOptions;
+                    awsConfigs.Path = $"/{_env}/StockTicker";
+                }).
+                AddSystemsManager(awsConfigs => {
+                    awsConfigs.AwsOptions = _awsOptions;
+                    awsConfigs.Path = "/StockTicker";
                 })
                 .Build();
 
