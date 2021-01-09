@@ -10,8 +10,7 @@ phases:
     post_build:
         commands:
             - dotnet publish -c Release
-
-    artifacts:
-        files:
-            - '**/*'
-        base-directory: ./bin/Release/net5.0/publish/
+artifacts:
+    files:
+        - '**/*'
+    base-directory: ./bin/Release/net5.0/publish/
