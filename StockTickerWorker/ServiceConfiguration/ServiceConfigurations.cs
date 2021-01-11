@@ -1,9 +1,8 @@
 using System;
-using System.Configuration;
 using Common.RabbitMQ;
 using Microsoft.Extensions.Configuration;
 
-namespace RedditMonitorWorker.ServiceConfiguration
+namespace StockTickerWorker.ServiceConfiguration
 {
     public class ServiceConfigurations : IServiceConfigurations, IRabbitConfigurations
     {

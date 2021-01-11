@@ -1,5 +1,4 @@
 using System.Text;
-using Common.Models;
 using Newtonsoft.Json;
 using RabbitMQ.Client.Events;
 using System.Linq;
@@ -9,9 +8,10 @@ using System.Net;
 using System.Threading.Tasks;
 using Common.RabbitMQ;
 using System.Text.RegularExpressions;
-using RedditMonitorWorker.ServiceConfiguration;
+using StockTickerWorker.ServiceConfiguration;
+using StockTickerWorker.Models;
 
-namespace RedditMonitorWorker.Logic
+namespace StockTickerWorker.Logic
 {
     public class RedditConsumer : IRedditConsumer
     {

@@ -6,10 +6,10 @@ using Common.RabbitMQ;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RedditMonitorWorker.Logic;
-using RedditMonitorWorker.ServiceConfiguration;
+using StockTickerWorker.Logic;
+using StockTickerWorker.ServiceConfiguration;
 
-namespace RedditMonitorWorker
+namespace StockTickerWorker
 {
     public class Worker : BackgroundService
     {
@@ -50,20 +50,6 @@ namespace RedditMonitorWorker
             services.AddSingleton<IRabbitPublisher, RabbitPublisher>();
             _serviceProvider = services.BuildServiceProvider(true);
         }
-
-        // private static IConfiguration RegisterConfigurations()
-        //     => new ConfigurationBuilder()
-        //         .AddJsonFile("appsettings.json")
-        //         .AddEnvironmentVariables()
-        //         .AddSystemsManager(awsConfigs => {
-        //             awsConfigs.AwsOptions = new Amazon.Extensions.NETCore.Setup.AWSOptions
-        //             {
-        //                 Profile = "socialmediadata",
-        //                 Region = Amazon.RegionEndpoint.USWest2
-        //             };
-        //             awsConfigs.Path = "/SocialMedia";
-        //         })
-        //         .Build();
 
         private static void DisposeServices()
         {

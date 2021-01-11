@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace RedditMonitorWorker.Logic
+namespace StockTickerWorker.Logic
 {
     public interface IStockTickerManager
     {

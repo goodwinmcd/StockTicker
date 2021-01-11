@@ -3,9 +3,9 @@ using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RedditMonitor.Logic.Healthcheck;
+using Common.Healthcheck;
 
-namespace RedditMonitorWorker
+namespace StockTickerWorker
 {
     class Program
     {
@@ -41,28 +41,5 @@ namespace RedditMonitorWorker
                     services.AddHostedService<HttpListenerService>();
                     services.AddHostedService<Worker>();
                 });
-
-        // static void Main(string[] args)
-        // {
-        //     ConfigureAndRunWinService();
-        // }
-
-        // private static void ConfigureAndRunWinService()
-        // {
-        //     var rc = HostFactory.Run(configurator =>
-        //     {
-        //         configurator.EnableServiceRecovery(recoveryConfig => recoveryConfig
-        //             .RestartService(1)
-        //             .RestartService(1)
-        //             .RestartService(1));
-        //         configurator.Service<ExecutorService>(serviceConfig =>
-        //         {
-        //             serviceConfig.ConstructUsing(context => new ExecutorService());
-        //             serviceConfig.WhenStarted((service, control) => service.Start(control));
-        //             serviceConfig.WhenStopped((service, control) => service.Stop(control));
-        //         });
-        //         configurator.RunAsLocalSystem();
-        //     });
-        // }
     }
 }

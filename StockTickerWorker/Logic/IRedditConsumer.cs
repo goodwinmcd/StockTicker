@@ -1,4 +1,4 @@
-namespace RedditMonitorWorker.Logic
+namespace StockTickerWorker.Logic
 {
     public interface IRedditConsumer
     {

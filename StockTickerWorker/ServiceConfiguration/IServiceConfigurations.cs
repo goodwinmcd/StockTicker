@@ -1,4 +1,4 @@
-namespace RedditMonitorWorker.ServiceConfiguration
+namespace StockTickerWorker.ServiceConfiguration
 {
     public interface IServiceConfigurations
     {

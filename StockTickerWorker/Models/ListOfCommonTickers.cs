@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace RedditMonitorWorker.Models
+namespace StockTickerWorker.Models
 {
     public class ListOfCommonTickers
     {

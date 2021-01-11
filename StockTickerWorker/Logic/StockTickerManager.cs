@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using Common.Models;
 using Newtonsoft.Json;
-using RedditMonitorWorker.Models;
-using RedditMonitorWorker.ServiceConfiguration;
+using StockTickerWorker.Models;
+using StockTickerWorker.ServiceConfiguration;
 
-namespace RedditMonitorWorker.Logic
+namespace StockTickerWorker.Logic
 {
     public class StockTickerManager : IStockTickerManager
     {
@@ -45,7 +44,7 @@ namespace RedditMonitorWorker.Logic
                 };
                 var result = httpClient.GetAsync($"{_serviceConfigurations.ApiUrl}/stockticker").Result;
                 var tickers =
-                    JsonConvert.DeserializeObject<List<StockTickerDb>>(
+                    JsonConvert.DeserializeObject<List<StockTicker>>(
                         result.Content.ReadAsStringAsync().Result);
                 return tickers.Select(t => t.NasdaqSymbol.ToLower());
             }
