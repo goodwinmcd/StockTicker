@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+    install:
+        runtime-versions:
+            dotnet: 5.0
+    build:
+        commands:
+            - dotnet build -c Release ./StockTickerMonitor/RedditMonitor.csproj
+    post_build:
+        commands:
+            - dotnet publish -c Release ./StockTickerMonitor/RedditMonitor.csproj
+artifacts:
+    files:
+        - '**/*'
+    base-directory: ./StockTickerMonitor/bin/Release/net5.0/publish/
