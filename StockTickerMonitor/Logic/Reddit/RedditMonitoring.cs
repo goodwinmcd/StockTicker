@@ -4,8 +4,8 @@ using Common.RabbitMQ;
 using Reddit;
 using Reddit.Controllers;
 using Reddit.Controllers.EventArgs;
-using RedditMonitor.Configurations;
-using RedditMonitor.Models;
+using StockTickerMonitor.Configurations;
+using StockTickerMonitor.Models;
 
 namespace StockTickerMonitor.Logic
 {

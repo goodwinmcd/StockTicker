@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Amazon.Extensions.NETCore.Setup;
-using RedditMonitor.Logic.Healthcheck;
+using Common.Healthcheck;
 
 namespace StockTickerMonitor
 {
