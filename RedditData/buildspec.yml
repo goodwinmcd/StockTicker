@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+    install:
+        runtime-versions:
+            dotnet: 5.0
+    build:
+        commands:
+            - dotnet build -c Release ./RedditData/RedditData.csproj
+    post_build:
+        commands:
+            - dotnet publish -c Release ./RedditData/RedditData.csproj
+artifacts:
+    files:
+        - '**/*'
+    base-directory: ./RedditData/bin/Release/net5.0/publish/
