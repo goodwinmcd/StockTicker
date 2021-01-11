@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+    install:
+        runtime-versions:
+            dotnet: 5.0
+    build:
+        commands:
+            - dotnet build -c Release ./StockTickerWorker/StockTickerWorker.csproj
+    post_build:
+        commands:
+            - dotnet publish -c Release ./StockTickerWorker/StockTickerWorker.csproj
+artifacts:
+    files:
+        - '**/*'
+    base-directory: ./StockTickerWorker/bin/Release/net5.0/publish/

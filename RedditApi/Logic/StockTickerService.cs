@@ -61,8 +61,10 @@ namespace RedditApi.Logic
                         var todaysCount =
                             await GetDaysCount(ticker, DateTime.Now.AddDays(-1).ToUniversalTime(), DateTime.Now.ToUniversalTime());
 
-                        ticker.DailyChangeInVolume = ConvertVolumeIncrease(
+                        var dailyChangeInVolume = ConvertVolumeIncrease(
                             todaysCount.CountOfOccurences, previousDaysCount.CountOfOccurences);
+
+                        ticker.DailyChangeInVolume = double.IsNaN(dailyChangeInVolume) ? 0 : dailyChangeInVolume;
                     }
                 }
                 return countOfMentionedStockTickers;
