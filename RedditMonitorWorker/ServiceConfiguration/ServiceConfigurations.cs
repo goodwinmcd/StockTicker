@@ -9,7 +9,7 @@ namespace RedditMonitorWorker.ServiceConfiguration
     {
         public ServiceConfigurations(IConfiguration configs)
         {
-            QueueHost = configs["rabbitmq:host"];
+            QueueHost = configs["rabbitmq:hostname"];
             QueueExchange = configs["rabbitmq:exchange"];
             QueuePort = Int32.Parse(configs["rabbitmq:port"]);
             Queue = configs["rabbitmq:queue"];

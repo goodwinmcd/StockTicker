@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Net.Security;
 using System.Threading;
 using RabbitMQ.Client;
 
