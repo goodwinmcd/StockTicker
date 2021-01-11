@@ -81,6 +81,7 @@ namespace LoadStockTickers
                 {
                     var watch = System.Diagnostics.Stopwatch.StartNew();
                     httpClient.Timeout = TimeSpan.FromMinutes(30);
+                    // var httpResponse = httpClient.PostAsync("http://stocktickerapi.us-west-1.elasticbeanstalk.com/stockticker/batch", content).Result;
                     var httpResponse = httpClient.PostAsync("http://localhost:5000/stockticker/batch", content).Result;
                     watch.Stop();
                     var elaspedTime = watch.ElapsedMilliseconds;

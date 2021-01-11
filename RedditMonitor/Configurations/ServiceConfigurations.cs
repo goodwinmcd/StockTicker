@@ -1,5 +1,4 @@
 using System;
-using System.Configuration;
 using Common.RabbitMQ;
 using Microsoft.Extensions.Configuration;
 
@@ -9,7 +8,7 @@ namespace RedditMonitor.Configurations
     {
         public ServiceConfigurations(IConfiguration configs)
         {
-            QueueHost = configs["rabbitmq:host"];
+            QueueHost = configs["rabbitmq:hostname"];
             QueueExchange = configs["rabbitmq:exchange"];
             Queue = configs["rabbitmq:queue"];
             QueueUserName = configs["rabbitmq:username"];
