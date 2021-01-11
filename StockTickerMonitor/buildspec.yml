@@ -6,10 +6,10 @@ phases:
             dotnet: 5.0
     build:
         commands:
-            - dotnet build -c Release ./StockTickerMonitor/RedditMonitor.csproj
+            - dotnet build -c Release ./StockTickerMonitor/StockTickerMonitor.csproj
     post_build:
         commands:
-            - dotnet publish -c Release ./StockTickerMonitor/RedditMonitor.csproj
+            - dotnet publish -c Release ./StockTickerMonitor/StockTickerMonitor.csproj
 artifacts:
     files:
         - '**/*'
