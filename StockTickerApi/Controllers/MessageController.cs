@@ -1,22 +1,22 @@
 using System;
 using System.Threading.Tasks;
-using Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RedditApi.Logic;
+using StockTickerApi.Logic;
+using StockTickerApi.Models;
 
-namespace RedditApi.Controllers
+namespace StockTickerApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class RedditMessageController : ControllerBase
+    public class MessageController : ControllerBase
     {
-        private readonly ILogger<RedditMessageController> _logger;
-        private readonly IRedditMessageService _redditMessageService;
+        private readonly ILogger<MessageController> _logger;
+        private readonly IMessageService _redditMessageService;
 
-        public RedditMessageController(
-            ILogger<RedditMessageController> logger,
-            IRedditMessageService redditMessageService)
+        public MessageController(
+            ILogger<MessageController> logger,
+            IMessageService redditMessageService)
         {
             _logger = logger;
             _redditMessageService = redditMessageService;
@@ -27,7 +27,7 @@ namespace RedditApi.Controllers
         {
             try
             {
-                var createdMessageId = await _redditMessageService.InsertRedditMessage(message);
+                var createdMessageId = await _redditMessageService.InsertMessage(message);
                 if (createdMessageId == -1)
                     return StatusCode(409, "Resource Already Exists");
                 else

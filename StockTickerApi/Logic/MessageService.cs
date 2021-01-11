@@ -1,27 +1,27 @@
 using System;
 using System.Configuration;
 using System.Threading.Tasks;
-using Common.Models;
 using Npgsql;
-using RedditApi.DataAccess;
-using RedditMonitor.Configurations;
+using StockTickerApi.DataAccess;
+using StockTickerApi.Configurations;
+using StockTickerApi.Models;
 
-namespace RedditApi.Logic
+namespace StockTickerApi.Logic
 {
-    public class RedditMessageService : IRedditMessageService
+    public class MessageService : IMessageService
     {
         private readonly NpgsqlConnection _connection;
-        private readonly IRedditMessageRepo _commentsRepo;
+        private readonly IMessageRepo _commentsRepo;
 
-        public RedditMessageService(
+        public MessageService(
             IServiceConfigurations configurations,
-            IRedditMessageRepo commentsRepo)
+            IMessageRepo commentsRepo)
         {
             _commentsRepo = commentsRepo;
             _connection = new NpgsqlConnection(configurations.dbConnectionString);
         }
 
-        public async Task<int> InsertRedditMessage(FoundMessage message)
+        public async Task<int> InsertMessage(FoundMessage message)
         {
             try
             {

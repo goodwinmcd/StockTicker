@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Common.Models;
 using Dapper;
+using StockTickerApi.Models;
 
-namespace RedditApi.DataAccess
+namespace StockTickerApi.DataAccess
 {
-    public class RedditMessageRepo : IRedditMessageRepo
+    public class MessageRepo : IMessageRepo
     {
         public async Task<int> InsertRedditMessage(FoundMessage message, IDbConnection conn)
         {

@@ -1,16 +1,14 @@
-using System;
-using System.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using RedditApi.DataAccess;
-using RedditApi.Logic;
-using RedditMonitor.Configurations;
+using StockTickerApi.DataAccess;
+using StockTickerApi.Logic;
+using StockTickerApi.Configurations;
 
-namespace RedditApi
+namespace StockTickerApi
 {
     public class Startup
     {
@@ -21,18 +19,15 @@ namespace RedditApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             InitilizeDb();
             services.AddControllers();
-            // var dbConnectionString = ConfigurationManager.ConnectionStrings["pgsql"];
-            // services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(dbConnectionString.ToString()));
             services.AddSingleton<IServiceConfigurations>(new ServiceConfigurations(Configuration));
             services.AddScoped<IStockTickerRepo, StockTickerRepo>();
             services.AddScoped<IStockTickerService, StockTickerService>();
-            services.AddScoped<IRedditMessageService, RedditMessageService>();
-            services.AddScoped<IRedditMessageRepo, RedditMessageRepo>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IMessageRepo, MessageRepo>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RedditApi", Version = "v1" });
@@ -47,7 +42,6 @@ namespace RedditApi
             initializeDb.InitializeDbAndTablesAsync().Wait();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace RedditMonitor.Configurations
+namespace StockTickerApi.Configurations
 {
     public class ServiceConfigurations : IServiceConfigurations
     {

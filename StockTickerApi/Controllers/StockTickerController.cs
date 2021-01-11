@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RedditApi.Logic;
+using StockTickerApi.Logic;
+using StockTickerApi.Models;
 
-namespace RedditApi.Controllers
+namespace StockTickerApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -74,7 +74,7 @@ namespace RedditApi.Controllers
         }
 
         [HttpPost("Batch")]
-        public async Task<IActionResult> PostBatch(IEnumerable<StockTickerDb> stockTickers)
+        public async Task<IActionResult> PostBatch(IEnumerable<StockTicker> stockTickers)
         {
             var results = await _stockTickerService.BulkTickerInsertAsync(stockTickers);
             return StatusCode(201, results);

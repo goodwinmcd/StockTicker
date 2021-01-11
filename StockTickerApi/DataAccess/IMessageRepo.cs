@@ -1,10 +1,10 @@
 using System.Data;
 using System.Threading.Tasks;
-using Common.Models;
+using StockTickerApi.Models;
 
-namespace RedditApi.DataAccess
+namespace StockTickerApi.DataAccess
 {
-    public interface IRedditMessageRepo
+    public interface IMessageRepo
     {
         Task<int> InsertRedditMessage(FoundMessage message, IDbConnection conn);
         Task InsertRedditTickerMessage(FoundMessage message, int messageId, IDbConnection conn);
