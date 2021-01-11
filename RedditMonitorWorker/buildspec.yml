@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+    install:
+        runtime-versions:
+            dotnet: 5.0
+    build:
+        commands:
+            - dotnet build -c Release ./RedditMonitorWorker/RedditMonitorWorker.csproj
+    post_build:
+        commands:
+            - dotnet publish -c Release ./RedditMonitorWorker/RedditMonitorWorker.csproj
+artifacts:
+    files:
+        - '**/*'
+    base-directory: ./RedditMonitorWorker/bin/Release/net5.0/publish/
