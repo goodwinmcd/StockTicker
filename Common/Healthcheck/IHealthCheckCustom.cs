@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace RedditMonitor.Logic.Healthcheck
+namespace Common.Healthcheck
 {
     public interface IHealthCheckCustom : IHealthCheck
     {
