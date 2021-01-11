@@ -49,7 +49,7 @@ namespace RedditData
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=RedditData}/{action=Index}");
             });
         }
     }

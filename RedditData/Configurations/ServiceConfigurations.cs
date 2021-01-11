@@ -1,10 +1,14 @@
-using System.Configuration;
-using Common.RabbitMQ;
+using Microsoft.Extensions.Configuration;
 
 namespace RedditData.Configurations
 {
     public class ServiceConfigurations : IServiceConfigurations
     {
-        public string ApiUrl { get; } = ConfigurationManager.AppSettings["api_url"];
+        public ServiceConfigurations(IConfiguration configurations)
+        {
+            ApiUrl = configurations["api_url"];
+        }
+
+        public string ApiUrl { get; }
     }
 }
