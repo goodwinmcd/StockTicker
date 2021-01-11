@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace RedditApi.Controllers
+namespace StockTickerApi.Controllers
 {
     [ApiController]
     [Route("/")]

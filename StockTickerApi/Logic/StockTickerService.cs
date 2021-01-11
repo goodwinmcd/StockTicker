@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
 using System.Linq;
-using Common.Models;
 using Npgsql;
-using RedditApi.DataAccess;
-using RedditMonitor.Configurations;
+using StockTickerApi.DataAccess;
+using StockTickerApi.Configurations;
+using StockTickerApi.Models;
 
-namespace RedditApi.Logic
+namespace StockTickerApi.Logic
 {
     public class StockTickerService : IStockTickerService
     {
@@ -38,7 +38,7 @@ namespace RedditApi.Logic
             }
         }
 
-        public async Task<IEnumerable<StockTickerCountDb>> GetMostMentionedTickers(
+        public async Task<IEnumerable<StockTickerWithCount>> GetMostMentionedTickers(
             DateTime startDate,
             DateTime endDate,
             int page,
@@ -79,11 +79,11 @@ namespace RedditApi.Logic
             => Math.Round(((todaysCount - yesterdaysCount) /
                 (yesterdaysCount + todaysCount)) * 100, 2);
 
-        private async Task<StockTickerCountDb> GetDaysCount(StockTickerCountDb ticker, DateTime start, DateTime end)
+        private async Task<StockTickerWithCount> GetDaysCount(StockTickerWithCount ticker, DateTime start, DateTime end)
         {
             var countOfTickerInDateRange = await
                 _stockTickerRepo.GetTopMentionedTickers(start, end, 0, 1, _connection, ticker.NasdaqSymbol);
-            return countOfTickerInDateRange.FirstOrDefault() ?? new StockTickerCountDb
+            return countOfTickerInDateRange.FirstOrDefault() ?? new StockTickerWithCount
                 {
                     Exchange = ticker.Exchange,
                     SecurityName = ticker.SecurityName,
@@ -92,11 +92,11 @@ namespace RedditApi.Logic
                 };
         }
 
-        public async Task<IEnumerable<StockTickerDb>> BulkTickerInsertAsync(IEnumerable<StockTickerDb> tickers)
+        public async Task<IEnumerable<StockTicker>> BulkTickerInsertAsync(IEnumerable<StockTicker> tickers)
         {
             try
             {
-                IEnumerable<StockTickerDb> successfulInserts = new List<StockTickerDb>();
+                IEnumerable<StockTicker> successfulInserts = new List<StockTicker>();
                 await _connection.OpenAsync();
                 foreach(var ticker in tickers)
                     if(await _stockTickerRepo.CreateTickerDBAsync(ticker, _connection))
@@ -109,7 +109,7 @@ namespace RedditApi.Logic
             }
         }
 
-        public async Task<IEnumerable<StockTickerDb>> GetAllTickersAsync()
+        public async Task<IEnumerable<StockTicker>> GetAllTickersAsync()
         {
             try
             {

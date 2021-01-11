@@ -7,13 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditData", "RedditData\Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{2C1BE604-1B97-4048-953A-FEEFA46CEC45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditApi", "RedditApi\RedditApi.csproj", "{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadStockTickers", "LoadStockTickers\LoadStockTickers.csproj", "{EF65F419-4705-4903-8789-EBA8028AE141}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockTickerMonitor", "StockTickerMonitor\StockTickerMonitor.csproj", "{FC1E75A3-34D5-4ADF-A1D0-1209A66D1375}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockTickerWorker", "stocktickerworker\StockTickerWorker.csproj", "{7DC4EE5D-BA55-49E3-8130-2F6245A3D664}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockTickerApi", "stocktickerapi\StockTickerApi.csproj", "{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,18 +52,6 @@ Global
 		{2C1BE604-1B97-4048-953A-FEEFA46CEC45}.Release|x64.Build.0 = Release|Any CPU
 		{2C1BE604-1B97-4048-953A-FEEFA46CEC45}.Release|x86.ActiveCfg = Release|Any CPU
 		{2C1BE604-1B97-4048-953A-FEEFA46CEC45}.Release|x86.Build.0 = Release|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Debug|x64.Build.0 = Debug|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Debug|x86.Build.0 = Debug|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Release|x64.ActiveCfg = Release|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Release|x64.Build.0 = Release|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Release|x86.ActiveCfg = Release|Any CPU
-		{8AD99270-D872-4FD3-B69B-84D20B8BE4F1}.Release|x86.Build.0 = Release|Any CPU
 		{EF65F419-4705-4903-8789-EBA8028AE141}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EF65F419-4705-4903-8789-EBA8028AE141}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF65F419-4705-4903-8789-EBA8028AE141}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -100,5 +88,17 @@ Global
 		{7DC4EE5D-BA55-49E3-8130-2F6245A3D664}.Release|x64.Build.0 = Release|Any CPU
 		{7DC4EE5D-BA55-49E3-8130-2F6245A3D664}.Release|x86.ActiveCfg = Release|Any CPU
 		{7DC4EE5D-BA55-49E3-8130-2F6245A3D664}.Release|x86.Build.0 = Release|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Debug|x64.Build.0 = Debug|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Debug|x86.Build.0 = Debug|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Release|x64.ActiveCfg = Release|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Release|x64.Build.0 = Release|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Release|x86.ActiveCfg = Release|Any CPU
+		{0D15AEE4-F33B-4B12-A23C-E9CEE97C1CCF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

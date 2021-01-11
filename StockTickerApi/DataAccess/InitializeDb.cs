@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
 
-namespace RedditApi.DataAccess
+namespace StockTickerApi.DataAccess
 {
     public class InitializeDb
     {

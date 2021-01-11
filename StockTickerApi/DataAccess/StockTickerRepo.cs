@@ -1,18 +1,18 @@
 using System.Data;
 using System.Threading.Tasks;
-using Common.Models;
 using Dapper;
 using System.Linq;
 using System.Collections.Generic;
 using System;
 using System.Text;
+using StockTickerApi.Models;
 
-namespace RedditApi.DataAccess
+namespace StockTickerApi.DataAccess
 {
     public class StockTickerRepo : IStockTickerRepo
     {
 
-        public async Task<IEnumerable<StockTickerCountDb>> GetTopMentionedTickers(
+        public async Task<IEnumerable<StockTickerWithCount>> GetTopMentionedTickers(
             DateTime startDate,
             DateTime endDate,
             int page,
@@ -36,7 +36,7 @@ namespace RedditApi.DataAccess
                         ORDER BY CountOfOccurences desc
                         OFFSET @Offset
                         LIMIT @Limit");
-            var result = await conn.QueryAsync<StockTickerCountDb>(sql.ToString(), new {
+            var result = await conn.QueryAsync<StockTickerWithCount>(sql.ToString(), new {
                 StartDate = startDate,
                 EndDate = endDate,
                 Offset = offset,
@@ -57,14 +57,14 @@ namespace RedditApi.DataAccess
             return result.FirstOrDefault().Count;
         }
 
-        public async Task<StockTickerDb> GetStockTickerData(string ticker, IDbConnection conn)
+        public async Task<StockTicker> GetStockTickerData(string ticker, IDbConnection conn)
         {
             var sql = @"SELECT * FROM stocktickers WHERE nasdaqsymbol = @Ticker";
-            var result = await conn.QueryAsync<StockTickerDb>(sql, new { Ticker = ticker });
+            var result = await conn.QueryAsync<StockTicker>(sql, new { Ticker = ticker });
             return result.FirstOrDefault();
         }
 
-        public async Task<bool> CreateTickerDBAsync(StockTickerDb ticker, IDbConnection conn)
+        public async Task<bool> CreateTickerDBAsync(StockTicker ticker, IDbConnection conn)
         {
             var sql = @"INSERT INTO stockTickers
                 VALUES (
@@ -90,17 +90,17 @@ namespace RedditApi.DataAccess
 
         }
 
-        public async Task<IEnumerable<StockTickerDb>> GetAllTickersAsync(IDbConnection conn)
+        public async Task<IEnumerable<StockTicker>> GetAllTickersAsync(IDbConnection conn)
         {
             var sql = "SELECT * FROM StockTickers";
-            var result = await conn.QueryAsync<StockTickerDb>(sql);
+            var result = await conn.QueryAsync<StockTicker>(sql);
             return result;
         }
 
-        public async Task<bool> TickerExists(StockTickerDb ticker, IDbConnection conn)
+        public async Task<bool> TickerExists(StockTicker ticker, IDbConnection conn)
         {
             var sql = "SELECT * FROM StockTickers WHERE nasdaqSymbol=@nasdaqSymbol";
-            var result = await conn.QueryAsync<StockTickerDb>(sql, new { nasdaqSymbol = ticker.NasdaqSymbol });
+            var result = await conn.QueryAsync<StockTicker>(sql, new { nasdaqSymbol = ticker.NasdaqSymbol });
             return result.Count() != 0;
         }
 

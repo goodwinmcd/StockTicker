@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using Common.Models;
+using StockTickerApi.Models;
 
-namespace RedditApi.DataAccess
+namespace StockTickerApi.DataAccess
 {
     public interface IStockTickerRepo
     {
-        Task<IEnumerable<StockTickerDb>> GetAllTickersAsync(IDbConnection conn);
-        Task<bool> CreateTickerDBAsync(StockTickerDb ticker, IDbConnection conn);
-        Task<StockTickerDb> GetStockTickerData(string ticker, IDbConnection conn);
-        Task<IEnumerable<StockTickerCountDb>> GetTopMentionedTickers(
+        Task<IEnumerable<StockTicker>> GetAllTickersAsync(IDbConnection conn);
+        Task<bool> CreateTickerDBAsync(StockTicker ticker, IDbConnection conn);
+        Task<StockTicker> GetStockTickerData(string ticker, IDbConnection conn);
+        Task<IEnumerable<StockTickerWithCount>> GetTopMentionedTickers(
             DateTime startDate,
             DateTime endDate,
             int page,
