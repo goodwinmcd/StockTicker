@@ -1,19 +1,18 @@
 using System;
 using System.Threading.Tasks;
-using Common.Models;
 using Microsoft.AspNetCore.Mvc;
-using RedditData.Logic;
-using RedditData.Models;
+using StockTickerUi.Logic;
+using StockTickerUi.Models;
 
-namespace RedditData.Controllers
+namespace StockTickerUi.Controllers
 {
-    public class RedditDataController : Controller
+    public class StockTickerController : Controller
     {
-        private readonly IRedditDataService _redditDataService;
+        private readonly IStockTickerService _stockTickerService;
 
-        public RedditDataController(IRedditDataService redditDataService)
+        public StockTickerController(IStockTickerService stockTickerService)
         {
-            _redditDataService = redditDataService;
+            _stockTickerService = stockTickerService;
         }
 
         public async Task<IActionResult> Index(
@@ -22,16 +21,16 @@ namespace RedditData.Controllers
             [FromQuery] string source = null)
         {
             var parsedTimes = new TimeFrameSelection(timeFrame);
-            var tickersTask = _redditDataService.GetTopStockTickersWithCount(
+            var tickersTask = _stockTickerService.GetTopStockTickersWithCount(
                 parsedTimes.StartDate,
                 parsedTimes.EndDate,
                 page,
                 source);
-            var pagingTask = _redditDataService.GetPagingData(parsedTimes.StartDate, parsedTimes.EndDate);
+            var pagingTask = _stockTickerService.GetPagingData(parsedTimes.StartDate, parsedTimes.EndDate);
             await Task.WhenAll(tickersTask, pagingTask);
             var tickers = tickersTask.Result;
             var paging = pagingTask.Result;
-            return View(new StockTickerUi
+            return View(new StockTickerView
                 {
                     Tickers = tickers,
                     Page = page,

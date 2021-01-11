@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RedditData.Models;
+using StockTickerUi.Models;
 
-namespace RedditData.Controllers
+namespace StockTickerUi.Controllers
 {
     public class HomeController : Controller
     {

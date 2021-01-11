@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RedditData.Configurations;
-using RedditData.Logic;
+using StockTickerUi.Configurations;
+using StockTickerUi.Logic;
 
 namespace RedditData
 {
@@ -21,7 +21,7 @@ namespace RedditData
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddScoped<IRedditDataService, RedditDataService>();
+            services.AddScoped<IStockTickerService, StockTickerService>();
             services.AddScoped<IServiceConfigurations, ServiceConfigurations>();
         }
 
