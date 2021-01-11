@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace RedditMonitor.Logic.Healthcheck
+namespace Common.Healthcheck
 {
 
     public class HealthCheckCustom : IHealthCheckCustom
