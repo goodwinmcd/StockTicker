@@ -12,7 +12,7 @@ using Tweetinvi.Models;
 using Microsoft.Extensions.Hosting;
 using Amazon.Extensions.NETCore.Setup;
 
-namespace RedditMonitor
+namespace StockTickerMonitor
 {
     public class Worker : BackgroundService
     {

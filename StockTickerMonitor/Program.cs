@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Amazon.Extensions.NETCore.Setup;
 using RedditMonitor.Logic.Healthcheck;
 
-namespace RedditMonitor
+namespace StockTickerMonitor
 {
     class Program
     {

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace RedditMonitor.Logic
+namespace StockTickerMonitor.Logic
 {
     public interface IRedditMonitoring
     {

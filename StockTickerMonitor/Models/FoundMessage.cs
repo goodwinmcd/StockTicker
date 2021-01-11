@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RedditMonitor.Models
+namespace StockTickerMonitor.Models
 {
     public class FoundMessage
     {

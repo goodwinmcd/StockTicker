@@ -4,23 +4,23 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Common.Models;
 using Common.RabbitMQ;
 using Newtonsoft.Json;
 using RedditMonitor.Configurations;
+using RedditMonitor.Models;
 using Tweetinvi;
 using Tweetinvi.Events;
 using Tweetinvi.Models;
 using Tweetinvi.Streaming;
 
-namespace RedditMonitor.Logic.Twitter
+namespace StockTickerMonitor.Logic.Twitter
 {
     public class TwitterMonitoring : ITwitterMonitoring
     {
         private readonly IRabbitPublisher _rabbitPublisher;
         private readonly ITwitterClient _twitterClient;
         private IFilteredStream _twitterStream;
-        private IEnumerable<StockTickerDb> _tickers;
+        private IEnumerable<StockTicker> _tickers;
         private DateTime _lastUpdateTime;
         private readonly String _routingKey = "messagesToProcess";
         private IServiceConfigurations _serviceConfigurations;
@@ -58,7 +58,7 @@ namespace RedditMonitor.Logic.Twitter
                 _twitterStream.AddTrack($"${t.NasdaqSymbol}");
         }
 
-        private async Task<IEnumerable<StockTickerDb>> LoadTickersAsync()
+        private async Task<IEnumerable<StockTicker>> LoadTickersAsync()
         {
             using (var httpClientHandler = new HttpClientHandler())
             {
@@ -66,12 +66,12 @@ namespace RedditMonitor.Logic.Twitter
                 using(var httpClient = new HttpClient(httpClientHandler))
                 {
                     var stockTickers = await httpClient.GetAsync(BuildTopTickersUrl());
-                    _tickers = JsonConvert.DeserializeObject<List<StockTickerDb>>(
+                    _tickers = JsonConvert.DeserializeObject<List<StockTicker>>(
                             await stockTickers.Content.ReadAsStringAsync());
                     if (_tickers.Count() == 0)
                     {
                         var allTickers = await httpClient.GetAsync(BuildAllTickersUrl());
-                        var tempAllTickers = JsonConvert.DeserializeObject<List<StockTickerDb>>(
+                        var tempAllTickers = JsonConvert.DeserializeObject<List<StockTicker>>(
                             await allTickers.Content.ReadAsStringAsync());
                         _tickers = tempAllTickers.Take(400);
                     }

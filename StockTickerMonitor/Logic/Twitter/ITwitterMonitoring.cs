@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace RedditMonitor.Logic.Twitter
+namespace StockTickerMonitor.Logic.Twitter
 {
     public interface ITwitterMonitoring
     {

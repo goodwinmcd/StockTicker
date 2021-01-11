@@ -1,13 +1,13 @@
 using System;
 using System.Threading.Tasks;
-using Common.Models;
 using Common.RabbitMQ;
 using Reddit;
 using Reddit.Controllers;
 using Reddit.Controllers.EventArgs;
 using RedditMonitor.Configurations;
+using RedditMonitor.Models;
 
-namespace RedditMonitor.Logic
+namespace StockTickerMonitor.Logic
 {
     public class RedditMonitoring : IRedditMonitoring
     {

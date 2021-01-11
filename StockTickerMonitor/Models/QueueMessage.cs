@@ -1,6 +1,6 @@
 using System;
 
-namespace Common.Models
+namespace StockTickerMonitor.Models
 {
     public class QueueMessage
     {

@@ -1,4 +1,4 @@
-namespace RedditMonitor.Models
+namespace StockTickerMonitor.Models
 {
     public enum SubReddit
     {
