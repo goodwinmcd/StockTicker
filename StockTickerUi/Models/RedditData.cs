@@ -1,6 +1,6 @@
-namespace RedditData.Models
+namespace StockTickerUi.Models
 {
-    public class RedditData
+    public class RedditDataCheck
     {
         public string TickerName { get; set; }
         public int TickerCount { get; set; }

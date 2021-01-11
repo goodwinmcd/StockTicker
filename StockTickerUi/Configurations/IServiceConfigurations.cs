@@ -1,4 +1,4 @@
-namespace RedditData.Configurations
+namespace StockTickerUi.Configurations
 {
     public interface IServiceConfigurations
     {

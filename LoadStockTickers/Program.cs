@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Collections.Generic;
 using System.IO;
-using Common.Models;
 using CsvHelper;
 using System.Globalization;
 using CsvHelper.Configuration.Attributes;
@@ -164,5 +163,12 @@ namespace LoadStockTickers
         public string TestIssue { get; set; }
         [Index(7)]
         public string Symbol { get; set; }
+    }
+
+    public class StockTickerDb
+    {
+        public String NasdaqSymbol { get; set; }
+        public String Exchange { get; set; }
+        public String SecurityName { get; set; }
     }
 }

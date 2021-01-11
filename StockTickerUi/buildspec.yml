@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+    install:
+        runtime-versions:
+            dotnet: 5.0
+    build:
+        commands:
+            - dotnet build -c Release ./StockTickerUi/StockTickerUi.csproj
+    post_build:
+        commands:
+            - dotnet publish -c Release ./StockTickerUi/StockTickerUi.csproj
+artifacts:
+    files:
+        - '**/*'
+    base-directory: ./StockTickerUi/bin/Release/net5.0/publish/

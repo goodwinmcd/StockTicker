@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Common.Models;
+using StockTickerUi.Models;
 
-namespace RedditData.Logic
+namespace StockTickerUi.Logic
 {
-    public interface IRedditDataService
+    public interface IStockTickerService
     {
-        Task<IEnumerable<StockTickerCountDb>> GetTopStockTickersWithCount(
+        Task<IEnumerable<StockTickerWithCount>> GetTopStockTickersWithCount(
             DateTime startDate, DateTime endDate, int page, string source = null);
         Task<int> GetPagingData(DateTime startDate, DateTime endDate);
     }

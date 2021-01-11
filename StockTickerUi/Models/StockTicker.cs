@@ -1,8 +1,8 @@
 using System;
 
-namespace Common.Models
+namespace StockTickerUi.Models
 {
-    public class StockTickerDb
+    public class StockTicker
     {
         public String NasdaqSymbol { get; set; }
         public String Exchange { get; set; }

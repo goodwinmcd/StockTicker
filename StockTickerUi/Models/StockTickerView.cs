@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 
-namespace Common.Models
+namespace StockTickerUi.Models
 {
-    public class StockTickerUi
+    public class StockTickerView
     {
-        public IEnumerable<StockTickerCountDb> Tickers { get; set; }
+        public IEnumerable<StockTickerWithCount> Tickers { get; set; }
         public int Page { get; set; }
         public int TotalPages { get; set; }
         public string Source { get; set; } = "All";

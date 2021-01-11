@@ -2,25 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Security;
 using System.Text;
 using System.Threading.Tasks;
-using Common.Models;
 using Newtonsoft.Json;
-using RedditData.Configurations;
+using StockTickerUi.Configurations;
+using StockTickerUi.Models;
 
-namespace RedditData.Logic
+namespace StockTickerUi.Logic
 {
-    public class RedditDataService : IRedditDataService
+    public class StockTickerService : IStockTickerService
     {
         private readonly IServiceConfigurations _configurations;
 
-        public RedditDataService(IServiceConfigurations configurations)
+        public StockTickerService(IServiceConfigurations configurations)
         {
             _configurations = configurations;
         }
 
-        public async Task<IEnumerable<StockTickerCountDb>> GetTopStockTickersWithCount(
+        public async Task<IEnumerable<StockTickerWithCount>> GetTopStockTickersWithCount(
             DateTime startDate, DateTime endDate, int page, string source=null)
         {
             var url = $"{_configurations.ApiUrl}/stockticker/GetTopTickers?startDate={startDate}&endDate={endDate}&page={page}";
@@ -35,7 +34,7 @@ namespace RedditData.Logic
                     var test = sb.ToString();
                     var httpResponse = await httpClient.GetAsync(test);
                     var check =
-                        JsonConvert.DeserializeObject<IEnumerable<StockTickerCountDb>>(await httpResponse.Content.ReadAsStringAsync());
+                        JsonConvert.DeserializeObject<IEnumerable<StockTickerWithCount>>(await httpResponse.Content.ReadAsStringAsync());
                     return check;
                 }
             }

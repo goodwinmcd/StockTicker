@@ -12,14 +12,14 @@ namespace StockTickerApi.Controllers
     public class MessageController : ControllerBase
     {
         private readonly ILogger<MessageController> _logger;
-        private readonly IMessageService _redditMessageService;
+        private readonly IMessageService _messageService;
 
         public MessageController(
             ILogger<MessageController> logger,
-            IMessageService redditMessageService)
+            IMessageService messageService)
         {
             _logger = logger;
-            _redditMessageService = redditMessageService;
+            _messageService = messageService;
         }
 
         [HttpPost]
@@ -27,7 +27,7 @@ namespace StockTickerApi.Controllers
         {
             try
             {
-                var createdMessageId = await _redditMessageService.InsertMessage(message);
+                var createdMessageId = await _messageService.InsertMessage(message);
                 if (createdMessageId == -1)
                     return StatusCode(409, "Resource Already Exists");
                 else

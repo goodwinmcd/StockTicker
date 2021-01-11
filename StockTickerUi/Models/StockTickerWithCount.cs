@@ -1,6 +1,6 @@
-namespace Common.Models
+namespace StockTickerUi.Models
 {
-    public class StockTickerCountDb : StockTickerDb
+    public class StockTickerWithCount : StockTicker
     {
         public int CountOfOccurences { get; set; }
         public double DailyChangeInVolume { get; set; }

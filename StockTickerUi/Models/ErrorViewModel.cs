@@ -1,6 +1,6 @@
 using System;
 
-namespace RedditData.Models
+namespace StockTickerUi.Models
 {
     public class ErrorViewModel
     {
