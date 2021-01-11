@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 using StockTickerUi.Configurations;
 using StockTickerUi.Logic;
 
-namespace RedditData
+namespace StockTickerUi
 {
     public class Startup
     {
@@ -49,7 +49,7 @@ namespace RedditData
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=RedditData}/{action=Index}");
+                    pattern: "{controller=StockTicker}/{action=Index}");
             });
         }
     }

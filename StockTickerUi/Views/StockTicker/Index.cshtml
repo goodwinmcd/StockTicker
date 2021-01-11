@@ -15,9 +15,9 @@
       Source Selection
     </button>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      @Html.ActionLink("All", "Index", "RedditData", new { page = 0 }, new { @class="dropdown-item" })
-      @Html.ActionLink("Twitter", "Index", "RedditData", new { page = 0, source="twitter" }, new { @class="dropdown-item", aria_labelledby="dropdownMenuButton" })
-      @Html.ActionLink("Reddit", "Index", "RedditData", new { page = 0, source="reddit" }, new { @class="dropdown-item", aria_labelledby="dropdownMenuButton" })
+      @Html.ActionLink("All", "Index", "StockTicker", new { page = 0 }, new { @class="dropdown-item" })
+      @Html.ActionLink("Twitter", "Index", "StockTicker", new { page = 0, source="twitter" }, new { @class="dropdown-item", aria_labelledby="dropdownMenuButton" })
+      @Html.ActionLink("Reddit", "Index", "StockTicker", new { page = 0, source="reddit" }, new { @class="dropdown-item", aria_labelledby="dropdownMenuButton" })
     </div>
   </div>
   <div class="dropdown" style="display:inline-block;">
@@ -25,20 +25,11 @@
       Time Selection
     </button>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      @Html.ActionLink("24 hours", "Index", "RedditData", new { page = 0, timeFrame="oneDay" }, new { @class="dropdown-item" })
-      @Html.ActionLink("48 hours", "Index", "RedditData", new { page = 0, timeFrame="twoDays" }, new { @class="dropdown-item", aria_labelledby="dropdownMenuButton" })
-      @Html.ActionLink("1 week", "Index", "RedditData", new { page = 0, timeFrame="oneWeek" }, new { @class="dropdown-item", aria_labelledby="dropdownMenuButton" })
+      @Html.ActionLink("24 hours", "Index", "StockTicker", new { page = 0, timeFrame="oneDay" }, new { @class="dropdown-item" })
+      @Html.ActionLink("48 hours", "Index", "StockTicker", new { page = 0, timeFrame="twoDays" }, new { @class="dropdown-item", aria_labelledby="dropdownMenuButton" })
+      @Html.ActionLink("1 week", "Index", "StockTicker", new { page = 0, timeFrame="oneWeek" }, new { @class="dropdown-item", aria_labelledby="dropdownMenuButton" })
     </div>
   </div>
-  @* <div style="display:inline-block; margin-left:10px;">
-    <label for="startdate" class="form-label" style="font-size:120%; font-weight:bold;">Start Date: </label> <input id=startDate value=@Model.StartDate.Date.ToString("yyyy-MM-dd") type="date" id="start" name="trip-start" max=@Model.EndDate.Date.ToString("yyyy-MM-dd")>
-  </div>
-  <div style="display:inline-block; margin-left:10px;">
-    <label for="enddate" class="form-label" style="font-size:120%; font-weight:bold;">End Date: </label> <input id=endDate value=@Model.EndDate.Date.ToString("yyyy-MM-dd") type="date" id="start" name="trip-start" min=@Model.StartDate.Date.ToString("yyyy-MM-dd") max=@DateTime.Now.Date.ToString("yyyy-MM-dd")>
-  </div>
-  <div style="display:inline-block; margin-left:10px;">
-    <button type="button" class="btn btn-primary" onclick="reloadDataWithSelectedDates()">Submit Dates</button>
-  </div> *@
 </div>
 
 
@@ -54,7 +45,7 @@
             <p class="card-text">Count of occurences in date range: @rd.CountOfOccurences</p>
             @{string style = rd.DailyChangeInVolume > 0 ? "color:green" : "color:red";}
             <p class="card-text" style="@style">Change in Volume: @rd.DailyChangeInVolume%</p>
-            @Html.ActionLink($"{@rd.NasdaqSymbol} on Robinhood", "RedirectToRobinhood", "RedditData", new { ticker = rd.NasdaqSymbol }, new { target="_blank", @class="btn btn-primary" })
+            @Html.ActionLink($"{@rd.NasdaqSymbol} on Robinhood", "RedirectToRobinhood", "StockTicker", new { ticker = rd.NasdaqSymbol }, new { target="_blank", @class="btn btn-primary" })
           </div>
         </div>
       </div>
@@ -66,22 +57,22 @@
   <ul class="pagination justify-content-center">
     @{string disabled = Model.Page == 0 ? "disabled" : ""; }
     <li class="page-item @disabled">
-      @Html.ActionLink("First", "Index", "RedditData", new { page = 0 }, new { @class="page-link @disabled" })
+      @Html.ActionLink("First", "Index", "StockTicker", new { page = 0 }, new { @class="page-link @disabled" })
     </li>
     <li class="page-item @disabled">
-      @Html.ActionLink("Previous", "Index", "RedditData", new { page = Model.Page - 1 }, new { @class="page-link @disabled" })
+      @Html.ActionLink("Previous", "Index", "StockTicker", new { page = Model.Page - 1 }, new { @class="page-link @disabled" })
     </li>
     <li class="page-item disabled">
-      @Html.ActionLink($"{@Model.Page + 1}", "Index", "RedditData", new { page = Model.Page }, new { @class="page-link" })
+      @Html.ActionLink($"{@Model.Page + 1}", "Index", "StockTicker", new { page = Model.Page }, new { @class="page-link" })
     </li>
     <li class="page-item">
-      @Html.ActionLink($"{@Model.Page + 2}", "Index", "RedditData", new { page = Model.Page + 1 }, new { @class="page-link" })
+      @Html.ActionLink($"{@Model.Page + 2}", "Index", "StockTicker", new { page = Model.Page + 1 }, new { @class="page-link" })
     </li>
     <li class="page-item">
-      @Html.ActionLink($"{@Model.Page + 3}", "Index", "RedditData", new { page = Model.Page + 2 }, new { @class="page-link" })
+      @Html.ActionLink($"{@Model.Page + 3}", "Index", "StockTicker", new { page = Model.Page + 2 }, new { @class="page-link" })
     </li>
     <li class="page-item">
-      @Html.ActionLink("Next", "Index", "RedditData", new { page = Model.Page + 1 }, new { @class="page-link" })
+      @Html.ActionLink("Next", "Index", "StockTicker", new { page = Model.Page + 1 }, new { @class="page-link" })
     </li>
   </ul>
 </nav>
@@ -106,7 +97,7 @@
       var endDate = document.getElementById('endDate').value;
       console.log(startDate);
       console.log(endDate);
-      window.location.href = `redditData/index?startDate=${startDate}&endDate=${endDate}`;
+      window.location.href = `StockTicker/index?startDate=${startDate}&endDate=${endDate}`;
     }
   </script>
 }
