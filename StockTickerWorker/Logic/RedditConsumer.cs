@@ -61,9 +61,10 @@ namespace StockTickerWorker.Logic
                     else
                         CheckRetryAndReque(body, ch, ea);
                 }
-                catch
+                catch (Exception ex)
                 {
                     CheckRetryAndReque(body, ch, ea);
+                    Console.WriteLine($"Something went wrong calling api. Requeueing: {ex}");
                 }
             }
             else{
