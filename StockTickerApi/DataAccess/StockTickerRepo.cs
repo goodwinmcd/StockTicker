@@ -24,14 +24,14 @@ namespace StockTickerApi.DataAccess
             var sql = new StringBuilder();
             var offset = page * limit;
             sql.Append(@"SELECT st.nasdaqsymbol, st.exchange, st.securityname, COUNT(*) AS CountOfOccurences
-                        FROM redditMessage AS rm
-                        JOIN stocktickersredditmessage AS strm ON rm.id = strm.redditmessageid
-                        JOIN stocktickers as st ON st.nasdaqsymbol = strm.stocktickerid
-                        WHERE rm.timeposted > @StartDate AND rm.timeposted < @EndDate");
+                        FROM foundMessage AS fm
+                        JOIN stocktickersfoundmessage AS stfm ON fm.id = stfm.foundmessageid
+                        JOIN stocktickers as st ON st.nasdaqsymbol = stfm.stocktickerid
+                        WHERE fm.timeposted > @StartDate AND fm.timeposted < @EndDate");
             if (stockTicker != null)
-                sql.Append(@" AND strm.stocktickerid = @StockTicker ");
+                sql.Append(@" AND stfm.stocktickerid = @StockTicker ");
             if (source != null)
-                sql.Append(@" AND rm.source = @Source ");
+                sql.Append(@" AND fm.source = @Source ");
             sql.Append(@" GROUP BY st.nasdaqsymbol, st.exchange, st.securityname
                         ORDER BY CountOfOccurences desc
                         OFFSET @Offset
@@ -52,7 +52,7 @@ namespace StockTickerApi.DataAccess
             DateTime startDate,
             DateTime endDate)
         {
-            var sql = @"SELECT COUNT(DISTINCT strm.stocktickerid) FROM stocktickersredditmessage AS strm";
+            var sql = @"SELECT COUNT(DISTINCT strm.stocktickerid) FROM stocktickersfoundmessage AS strm";
             var result = await conn.QueryAsync<PagingResultDb>(sql);
             return result.FirstOrDefault().Count;
         }

@@ -12,17 +12,17 @@ namespace StockTickerApi.DataAccess
     {
         public async Task<int> InsertRedditMessage(FoundMessage message, IDbConnection conn)
         {
-            var sql = @"INSERT INTO redditMessage(
+            var sql = @"INSERT INTO foundMessage(
                 source,
                 subreddit,
-                redditid,
+                externalid,
                 timeposted,
                 message
             )
                 VALUES (
                     @Source,
                     @SubReddit,
-                    @RedditId,
+                    @ExternalId,
                     @TimePosted,
                     @Message) RETURNING id";
             if(await MessageExists(message, conn))
@@ -35,7 +35,7 @@ namespace StockTickerApi.DataAccess
                 var result = await conn.QueryAsync<int>(sql, new {
                     Source = message.Source.ToLower(),
                     SubReddit = message.SubReddit,
-                    RedditId = message.RedditId,
+                    RedditId = message.ExternalId,
                     TimePosted = message.TimePosted,
                     Message = message.Message
                 });
@@ -48,8 +48,8 @@ namespace StockTickerApi.DataAccess
             var listOfInserts = new List<Task>();
             foreach (var ticker in message.Tickers)
             {
-                var sql = @"INSERT INTO stockTickersRedditMessage(
-                    redditMessageId,
+                var sql = @"INSERT INTO stockTickersFoundMessage(
+                    foundMessageId,
                     stocktickerid
                 )
                     VALUES(
@@ -61,7 +61,7 @@ namespace StockTickerApi.DataAccess
 
         private async Task<bool> MessageExists(FoundMessage message, IDbConnection conn)
         {
-            var sql = @"SELECT * FROM redditMessage WHERE redditId=@RedditId";
+            var sql = @"SELECT * FROM foundMessage WHERE externalId=@ExternalId";
             var result = await conn.QueryAsync<FoundMessage>(sql, message);
             return result.Count() != 0;
         }
