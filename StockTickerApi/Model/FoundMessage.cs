@@ -11,6 +11,7 @@ namespace StockTickerApi.Models
         public DateTime TimePosted { get; set; }
         public String Message { get; set; }
         public IEnumerable<string> Tickers {get; set; }
+        public int Sentiment { get; set; }
     }
 
     public enum MessageSource

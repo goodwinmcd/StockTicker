@@ -125,7 +125,7 @@ namespace StockTickerMonitor.Logic.Twitter
                 MessageContent = new FoundMessage {
                     Source = MessageSource.Twitter.ToString(),
                     SubReddit = null,
-                    RedditId = tweet.Id.ToString(),
+                    ExternalId = tweet.Id.ToString(),
                     TimePosted = tweet.CreatedAt.UtcDateTime,
                     Message = fullMessage
                 }

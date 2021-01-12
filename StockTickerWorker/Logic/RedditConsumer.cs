@@ -19,18 +19,21 @@ namespace StockTickerWorker.Logic
         public readonly  IRabbitConsumer _rabbitConsumer;
         private readonly IStockTickerManager _stockTickerManager;
         private readonly IServiceConfigurations _serviceConfigurations;
+        private readonly ISentimentAnalysis _sentimentAnalysis;
         private readonly String _routingKey = "messagesToProcess";
 
         public RedditConsumer(
             IRabbitPublisher rabbitPublisher,
             IRabbitConsumer rabbitManager,
             IStockTickerManager stockTickerManager,
-            IServiceConfigurations serviceConfigurations)
+            IServiceConfigurations serviceConfigurations,
+            ISentimentAnalysis sentimentAnalysis)
         {
             _rabbitPublisher = rabbitPublisher;
             _rabbitConsumer = rabbitManager;
             _stockTickerManager = stockTickerManager;
             _serviceConfigurations = serviceConfigurations;
+            _sentimentAnalysis = sentimentAnalysis;
         }
 
         public void Consume()
@@ -48,6 +51,8 @@ namespace StockTickerWorker.Logic
             var foundStockTickers = _stockTickerManager.FindMatchingTickers(messageWords);
             if (foundStockTickers.Any())
             {
+                body.MessageContent.Sentiment =
+                    await _sentimentAnalysis.GetSentimentAsIntAsync(body.MessageContent.Message);
                 body.MessageContent.Tickers = foundStockTickers;
                 try
                 {
@@ -90,7 +95,7 @@ namespace StockTickerWorker.Logic
                     httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => {
                         return true;
                     };
-                    var result = await httpClient.PostAsync($"{_serviceConfigurations.ApiUrl}/redditMessage", content);
+                    var result = await httpClient.PostAsync($"{_serviceConfigurations.ApiUrl}/Message", content);
                     return result.StatusCode == HttpStatusCode.Created;
                 }
         }
