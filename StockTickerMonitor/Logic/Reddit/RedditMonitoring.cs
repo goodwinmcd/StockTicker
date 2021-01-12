@@ -76,7 +76,7 @@ namespace StockTickerMonitor.Logic
                     MessageContent = new FoundMessage {
                             Source = message.Source,
                             SubReddit = subReddit.ToString(),
-                            RedditId = message.RedditId,
+                            ExternalId = message.RedditId,
                             TimePosted = message.CreatedWrap,
                             Message = message.Content,
                         },

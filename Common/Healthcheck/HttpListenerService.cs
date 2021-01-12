@@ -1,6 +1,7 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
@@ -10,13 +11,15 @@ namespace Common.Healthcheck
     {
         private IHealthCheckCustom _healthCheck;
         private HttpListener _listener;
+        private string _port;
 
-        public HttpListenerService()
+        public HttpListenerService(IConfiguration configs)
         {
             _healthCheck = new HealthCheckCustom();
+            _port = configs["listenerPort"] ?? "5000";
             _listener = new HttpListener
             {
-                Prefixes = { "http://localhost:5001/" }
+                Prefixes = { $"http://localhost:{_port}/" }
             };
         }
 

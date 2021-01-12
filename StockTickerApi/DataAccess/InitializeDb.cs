@@ -19,18 +19,21 @@ namespace StockTickerApi.DataAccess
         {
             await CreateDbAsync();
             await CreateTablesAsync();
+            await UpdateTablesAsync();
         }
 
-        private async Task CreateDbAsync()
+        private async Task<bool> CreateDbAsync()
         {
             try
             {
                 await _adminConnection.OpenAsync();
                 var sql = @"CREATE DATABASE stockTickers";
                 await _adminConnection.ExecuteAsync(sql);
+                return true;
             }
             catch
             {
+                return false;
                 // do nothing. I expect it to exists most of the time
             }
             finally
@@ -46,6 +49,17 @@ namespace StockTickerApi.DataAccess
             await CreateStockTickersRedditMessageTableAsync();
         }
 
+        private async Task UpdateTablesAsync()
+        {
+            await CreateSentimentColumn();
+        }
+
+        private async Task CreateSentimentColumn()
+        {
+            var sql = @"ALTER TABLE FoundMessage ADD COLUMN IF NOT EXISTS sentiment INTEGER;";
+            await ExecuteQueryAsync(sql);
+        }
+
         private async Task CreateStockTickersTableAsync()
         {
             var sql = @"CREATE TABLE IF NOT EXISTS stocktickers (
@@ -58,11 +72,11 @@ namespace StockTickerApi.DataAccess
 
         private async Task CreateRedditMessageTableAsync()
         {
-            var sql = @"CREATE TABLE IF NOT EXISTS RedditMessage (
+            var sql = @"CREATE TABLE IF NOT EXISTS FoundMessage (
                 id SERIAL PRIMARY KEY,
                 source TEXT,
                 subreddit TEXT,
-                redditId TEXT,
+                externalId TEXT,
                 timePosted TimeStamp,
                 message TEXT
             );";
@@ -71,12 +85,12 @@ namespace StockTickerApi.DataAccess
 
         private async Task CreateStockTickersRedditMessageTableAsync()
         {
-            var sql = @"CREATE TABLE IF NOT EXISTS stockTickersRedditMessage(
-                    redditMessageId INT NOT NULL,
+            var sql = @"CREATE TABLE IF NOT EXISTS stockTickersFoundMessage(
+                    foundMessageId INT NOT NULL,
                     stockTickerId TEXT NOT NULL,
-                    PRIMARY KEY (redditMessageId, stockTickerId),
-                FOREIGN KEY (redditMessageId)
-                    REFERENCES RedditMessage(id),
+                    PRIMARY KEY (foundMessageId, stockTickerId),
+                FOREIGN KEY (foundMessageId)
+                    REFERENCES FoundMessage(id),
                 FOREIGN KEY (stockTickerId)
                     REFERENCES StockTickers (nasdaqSymbol)
                 );";

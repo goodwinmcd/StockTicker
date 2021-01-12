@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Amazon.Comprehend;
 using Autofac;
 using Common.RabbitMQ;
 using Microsoft.Extensions.Configuration;
@@ -48,6 +49,7 @@ namespace StockTickerWorker
             services.AddSingleton<IStockTickerManager, StockTickerManager>();
             services.AddSingleton<IRedditConsumer, RedditConsumer>();
             services.AddSingleton<IRabbitPublisher, RabbitPublisher>();
+            services.AddSingleton<ISentimentAnalysis, SentimentAnalysis>();
             _serviceProvider = services.BuildServiceProvider(true);
         }
 
