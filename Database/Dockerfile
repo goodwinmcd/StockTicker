@@ -1,4 +1,4 @@
-FROM postgres:9.3
+FROM postgres
 EXPOSE 5432
 ENV POSTGRES_USER docker
 ENV POSTGRES_PASSWORD docker

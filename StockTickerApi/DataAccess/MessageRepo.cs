@@ -12,32 +12,34 @@ namespace StockTickerApi.DataAccess
     {
         public async Task<int> InsertRedditMessage(FoundMessage message, IDbConnection conn)
         {
-            var sql = @"INSERT INTO redditMessage(
+            var sql = @"INSERT INTO foundMessage(
                 source,
                 subreddit,
-                redditid,
+                externalid,
                 timeposted,
-                message
+                message,
+                sentiment
             )
                 VALUES (
                     @Source,
                     @SubReddit,
-                    @RedditId,
+                    @ExternalId,
                     @TimePosted,
-                    @Message) RETURNING id";
+                    @Message,
+                    @Sentiment) RETURNING id";
             if(await MessageExists(message, conn))
             {
                 return -1;
             }
             else
             {
-                var test = message.TimePosted.ToString("yyyy-MM-DD HH:mm:ss");
                 var result = await conn.QueryAsync<int>(sql, new {
                     Source = message.Source.ToLower(),
                     SubReddit = message.SubReddit,
-                    RedditId = message.RedditId,
+                    ExternalId = message.ExternalId,
                     TimePosted = message.TimePosted,
-                    Message = message.Message
+                    Message = message.Message,
+                    Sentiment = message.Sentiment,
                 });
                 return result.Single();
             }
@@ -45,11 +47,10 @@ namespace StockTickerApi.DataAccess
 
         public async Task InsertRedditTickerMessage(FoundMessage message, int id, IDbConnection conn)
         {
-            var listOfInserts = new List<Task>();
             foreach (var ticker in message.Tickers)
             {
-                var sql = @"INSERT INTO stockTickersRedditMessage(
-                    redditMessageId,
+                var sql = @"INSERT INTO stocktickersfoundmessage(
+                    foundmessageid,
                     stocktickerid
                 )
                     VALUES(
@@ -61,7 +62,7 @@ namespace StockTickerApi.DataAccess
 
         private async Task<bool> MessageExists(FoundMessage message, IDbConnection conn)
         {
-            var sql = @"SELECT * FROM redditMessage WHERE redditId=@RedditId";
+            var sql = @"SELECT * FROM foundMessage WHERE externalId=@ExternalId";
             var result = await conn.QueryAsync<FoundMessage>(sql, message);
             return result.Count() != 0;
         }
