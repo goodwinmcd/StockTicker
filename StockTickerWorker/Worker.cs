@@ -29,12 +29,14 @@ namespace StockTickerWorker
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             BootstrapService();
+            Console.WriteLine("Calling Consume");
             var consumeTask = Task.Factory.StartNew(() => _worker.Consume());
             await Task.WhenAll(consumeTask);
         }
 
         private void BootstrapService()
         {
+            Console.WriteLine("Bootstrapping");
             RegisterDependencies();
             _worker = _serviceProvider.GetService<IRedditConsumer>();
         }

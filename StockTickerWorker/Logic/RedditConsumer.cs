@@ -45,17 +45,20 @@ namespace StockTickerWorker.Logic
 
         private async Task C_ConsumeMessage(object ch, BasicDeliverEventArgs ea)
         {
+            Console.WriteLine("Consumeing message");
             var content = Encoding.UTF8.GetString(ea.Body.ToArray());
             var body = JsonConvert.DeserializeObject<QueueMessage>(content);
             var messageWords = StripNewLines(StripPunctuation(body.MessageContent.Message)).Split(' ');
             var foundStockTickers = _stockTickerManager.FindMatchingTickers(messageWords);
             if (foundStockTickers.Any())
             {
+                Console.WriteLine("found stock tickers");
                 body.MessageContent.Sentiment =
                     await _sentimentAnalysis.GetSentimentAsIntAsync(body.MessageContent.Message);
                 body.MessageContent.Tickers = foundStockTickers;
                 try
                 {
+                    Console.WriteLine("got sentiment. Calling api");
                     if(await CallApi(body.MessageContent))
                         _rabbitConsumer.BasicAck(ea.DeliveryTag, false);
                     else
@@ -68,6 +71,7 @@ namespace StockTickerWorker.Logic
                 }
             }
             else{
+                Console.WriteLine("Nothing found");
                 _rabbitConsumer.BasicAck(ea.DeliveryTag, false);
             }
         }
