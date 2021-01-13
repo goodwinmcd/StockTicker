@@ -53,11 +53,11 @@ namespace StockTickerWorker.Logic
             if (foundStockTickers.Any())
             {
                 Console.WriteLine("found stock tickers");
-                body.MessageContent.Sentiment =
-                    await _sentimentAnalysis.GetSentimentAsIntAsync(body.MessageContent.Message);
-                body.MessageContent.Tickers = foundStockTickers;
                 try
                 {
+                    body.MessageContent.Sentiment =
+                        await _sentimentAnalysis.GetSentimentAsIntAsync(body.MessageContent.Message);
+                    body.MessageContent.Tickers = foundStockTickers;
                     Console.WriteLine("got sentiment. Calling api");
                     if(await CallApi(body.MessageContent))
                         _rabbitConsumer.BasicAck(ea.DeliveryTag, false);
