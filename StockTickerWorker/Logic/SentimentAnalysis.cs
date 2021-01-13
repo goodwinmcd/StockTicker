@@ -18,7 +18,7 @@ namespace StockTickerWorker.Logic
 
         public SentimentAnalysis()
         {
-            _awsComprehendClient = new AmazonComprehendClient();
+            _awsComprehendClient = new AmazonComprehendClient(Amazon.RegionEndpoint.USWest2);
         }
 
         public async Task<int> GetSentimentAsIntAsync(string messageText)

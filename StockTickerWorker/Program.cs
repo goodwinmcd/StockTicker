@@ -27,7 +27,6 @@ namespace StockTickerWorker
                 .ConfigureAppConfiguration((hostingContext, builder) => {
                     builder
                         .AddSystemsManager(awsConfigs => {
-
                             awsConfigs.AwsOptions = _awsOptions;
                             awsConfigs.Path = $"/{hostingContext.HostingEnvironment.EnvironmentName}/StockTicker";
                         }).AddSystemsManager(awsConfigs => {
